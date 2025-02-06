@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 import uuid
 from database import Base
-Base = declarative_base()
+
 
 def generate_uuid():
     return str(uuid.uuid4())
