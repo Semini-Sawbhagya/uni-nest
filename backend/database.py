@@ -9,3 +9,4 @@ engine = create_engine(URL_DATABSE)
 Sessionlocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+
