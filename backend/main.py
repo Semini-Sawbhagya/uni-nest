@@ -101,3 +101,113 @@ async def read_user(user_id:str,db:db_dependancy):
     if user is None:
         raise HTTPException(status_code=404,detail="User not found")
     return user
+<<<<<<< Updated upstream
+=======
+
+@app.get("/boardings/{uni_id}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
+async def get_boardings_by_uni(uni_id: int, db: db_dependancy):
+    try:
+        if not uni_id:
+            raise HTTPException(status_code=400, detail="University ID is required")
+        boardings = db.query(models.Boarding).filter(models.Boarding.uni_id == uni_id).all()
+        if not boardings:
+            raise HTTPException(status_code=404, detail="No boardings found for this university")
+        return boardings
+    except Exception as e:
+        print(f"Error fetching boardings: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+
+
+@app.get("/boardings-type/{type}",response_model=List[BoardingBase],status_code=status.HTTP_200_OK)
+async def get_boarding_by_type(type:str,db:db_dependancy):
+    try:
+        if not type:
+            raise HTTPException(status_code=400, detail="Type is required")
+        boardings =db.query(models.Boarding).filter(models.Boarding.type == type).all()
+        if not boardings:
+                raise HTTPException(status_code=404, detail="No boardings found for this university")
+        return boardings
+    except Exception as e:
+        print(f"Error fetching boardings: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+@app.get("/boardings-price_range/{price_range}",response_model=List[BoardingBase],status_code=status.HTTP_200_OK)
+async def get_boarding_by_price_range(price_range: str,db:db_dependancy):
+    try:
+        if not price_range:
+            raise HTTPException(status_code=400, detail="Price Range is required")
+        boardings =db.query(models.Boarding).filter(models.Boarding.price_range == price_range).all()
+        if not boardings:
+                raise HTTPException(status_code=404, detail="No boardings found for this university")
+        return boardings
+    except Exception as e:
+        print(f"Error fetching boardings: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error") 
+    
+@app.get("/boardings-by-uni-type/{uni_id}/{type}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
+async def get_boardings_by_uni_and_type(uni_id: int, type: str, db: db_dependancy):
+    try:
+        if not uni_id or not type:
+            raise HTTPException(status_code=400, detail="University ID and Type are required")
+        boardings = db.query(models.Boarding).filter(
+            models.Boarding.uni_id == uni_id, models.Boarding.type == type
+        ).all()
+        if not boardings:
+            raise HTTPException(status_code=404, detail="No boardings found according to  the given criteria")
+        return boardings
+    except Exception as e:
+        print(f"Error fetching boardings: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@app.get("/boardings-by-type-price/{type}/{price_range}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
+async def get_boardings_by_type_and_price(type: str, price_range: str, db: db_dependancy):
+    try:
+        if not type or not price_range:
+            raise HTTPException(status_code=400, detail="Type and Price Range are required")
+        boardings = db.query(models.Boarding).filter(
+            models.Boarding.type == type, models.Boarding.price_range == price_range
+        ).all()
+        if not boardings:
+            raise HTTPException(status_code=404, detail="No boardings found according to the given criteria")
+        return boardings
+    except Exception as e:
+        print(f"Error fetching boardings: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@app.get("/boardings-by-uni-price/{uni_id}/{price_range}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
+async def get_boardings_by_uni_and_price(uni_id: int, price_range: str, db: db_dependancy):
+    try:
+        if not uni_id or not price_range:
+            raise HTTPException(status_code=400, detail="University ID and Price Range are required")
+        boardings = db.query(models.Boarding).filter(
+            models.Boarding.uni_id == uni_id, models.Boarding.price_range == price_range
+        ).all()
+        if not boardings:
+            raise HTTPException(status_code=404, detail="No boardings found according to  the given criteria")
+        return boardings
+    except Exception as e:
+        print(f"Error fetching boardings: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@app.get("/boardings-by-uni-price-type/{uni_id}/{price_range}/{type}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
+async def get_boardings_by_uni_price_and_type(uni_id: int, price_range: str, type: str, db: db_dependancy):
+    try:
+        if not uni_id or not price_range or not type:
+            raise HTTPException(status_code=400, detail="University ID, Price Range, and Type are required")
+        boardings = db.query(models.Boarding).filter(
+            models.Boarding.uni_id == uni_id,
+            models.Boarding.price_range == price_range,
+            models.Boarding.type == type
+        ).all()
+        if not boardings:
+            raise HTTPException(status_code=404, detail="No boardings found according to  the given criteria")
+        return boardings
+    except Exception as e:
+        print(f"Error fetching boardings: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+>>>>>>> Stashed changes
