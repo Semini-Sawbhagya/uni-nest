@@ -4,9 +4,12 @@ from typing import Annotated
 import models
 from database import engine,Sessionlocal
 from sqlalchemy.orm import Session
+from fastapi.security import OAuth2PasswordBearer
+
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @app.get("/")
 async def welcome():
@@ -15,6 +18,10 @@ async def welcome():
 @app.get("/hello/{name}")
 async def hello(name):
    return {"Hello": name}
+
+@app.get("/items/")
+async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
+    return {"token": token}
 
 class UniversityBase(BaseModel):
     uni_id: int
