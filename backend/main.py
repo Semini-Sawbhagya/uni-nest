@@ -108,10 +108,8 @@ async def read_user(user_id:str,db:db_dependancy):
     if user is None:
         raise HTTPException(status_code=404,detail="User not found")
     return user
-<<<<<<< Updated upstream
-=======
 
-@app.get("/boardings/{uni_id}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
+@app.get("/boardings/{uni_id}", response_model=ist[BoardingBase], status_code=status.HTTP_200_OK)
 async def get_boardings_by_uni(uni_id: int, db: db_dependancy):
     try:
         if not uni_id:
@@ -217,4 +215,3 @@ async def get_boardings_by_uni_price_and_type(uni_id: int, price_range: str, typ
         print(f"Error fetching boardings: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
->>>>>>> Stashed changes
