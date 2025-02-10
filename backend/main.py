@@ -7,12 +7,21 @@ from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
 from Security.utils import hash_password
 from sqlalchemy.sql import text
+from fastapi.middleware.cors import CORSMiddleware
 
 
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Replace with your frontend's URL
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (POST, GET, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 
 @app.get("/")
 async def welcome():
@@ -73,7 +82,7 @@ class BoardingBase(BaseModel):
     img: str
     price_range: str
     location: str
-    rating: float
+    ratings: float
     review: str
     type: str
     security: str
