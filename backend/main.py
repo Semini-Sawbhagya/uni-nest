@@ -103,6 +103,7 @@ async def read_user(user_id:str,db:db_dependancy):
         raise HTTPException(status_code=404,detail="User not found")
     return user
 
+<<<<<<< Updated upstream
 @app.post("/boardings/", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
 async def get_boardings_by_uni(uni_id: int, db: db_dependancy):
     try:
@@ -114,3 +115,11 @@ async def get_boardings_by_uni(uni_id: int, db: db_dependancy):
     except Exception as e:
         print(f"Error fetching boardings: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+=======
+@app.get("/")
+def welcome():
+    return {"message": "Welcome to UniNest API!"}
+
+
+
+>>>>>>> Stashed changes

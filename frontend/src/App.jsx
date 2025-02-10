@@ -1,4 +1,5 @@
 import React from 'react'
+<<<<<<< Updated upstream
 import NavBar from './components/Student/NavBar/NavBar'
 import { Route, Routes } from 'react-router-dom'
 import Home from './components/Student/Home/Home'
@@ -14,6 +15,14 @@ const App = () => {
     </div>
     <Footer/>
     </>
+=======
+
+const App = () => {
+  return (
+    <div>
+      
+    </div>
+>>>>>>> Stashed changes
   )
 }
 
