@@ -1,10 +1,13 @@
 from fastapi import FastAPI,Path,HTTPException,Depends,status
 from pydantic import BaseModel
-from typing import Annotated
+from typing import Annotated,List
 import models
-from database import engine,Sessionlocal
+from database import engine,get_db
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
+from Security.utils import hash_password
+from sqlalchemy.sql import text
+
 
 
 app = FastAPI()
@@ -28,11 +31,9 @@ class UniversityBase(BaseModel):
     name: str
 
 class UserBase(BaseModel):
-    user_id: str
     user_name: str
     password: str
     email: str
-    role: str
 
 class PaymentBase(BaseModel):
     payment_id: int
@@ -87,12 +88,7 @@ class StudentBase(BaseModel):
     profile_pic:str
     user_id: str
     
-def get_db():
-    db = Sessionlocal()
-    try:
-        yield db
-    finally:
-        db.close()
+
 
 db_dependancy = Annotated[Session,Depends(get_db)]
 
@@ -109,7 +105,7 @@ async def read_user(user_id:str,db:db_dependancy):
         raise HTTPException(status_code=404,detail="User not found")
     return user
 
-@app.get("/boardings/{uni_id}", response_model=ist[BoardingBase], status_code=status.HTTP_200_OK)
+@app.get("/boardings/{uni_id}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
 async def get_boardings_by_uni(uni_id: int, db: db_dependancy):
     try:
         if not uni_id:
@@ -215,3 +211,20 @@ async def get_boardings_by_uni_price_and_type(uni_id: int, price_range: str, typ
         print(f"Error fetching boardings: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
+@app.post("/student-register/")
+def register_user(user: UserBase, db: Session = Depends(get_db)):
+    try:
+        # Call the stored procedure
+        query = text("CALL db_Create_Student(:username, :email, :password)")
+        hashed_password = hash_password(user.password)
+        db.execute(query, {
+            "username": user.user_name,
+            "email": user.email,
+            "password": hashed_password
+        })
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+    return {"message": "Student user profile registered successfully"}

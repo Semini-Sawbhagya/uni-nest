@@ -3,17 +3,21 @@ import "./SignUp.css"; // Import the external CSS file
 import { Link } from "react-router-dom";
 import axios from 'axios'
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 const SignUp = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:5000/register',{name,email,password})
-        .then(res => {console.log(res.data)})
+        axios.post('http://localhost:5000/student-register',{name,email,password})
+        .then(result => {console.log(result)
+            navigate('/login')
+        })
         .catch(err => console.log(err))
         
     }
