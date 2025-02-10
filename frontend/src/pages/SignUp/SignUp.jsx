@@ -7,14 +7,14 @@ import { useNavigate } from "react-router-dom";
 
 
 const SignUp = () => {
-    const [name, setName] = useState("");
+    const [user_name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:5000/student-register',{name,email,password})
+        axios.post('http://localhost:8000/student-register',{user_name,email,password})
         .then(result => {console.log(result)
             navigate('/login')
         })
