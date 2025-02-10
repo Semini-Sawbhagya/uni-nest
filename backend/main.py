@@ -5,6 +5,7 @@ import models
 from database import engine,Sessionlocal
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
+from  typing import List
 
 
 app = FastAPI()
@@ -72,7 +73,7 @@ class BoardingBase(BaseModel):
     img: str
     price_range: str
     location: str
-    rating: float
+    ratings: float
     review: str
     type: str
     security: str
@@ -109,12 +110,15 @@ async def read_user(user_id:str,db:db_dependancy):
         raise HTTPException(status_code=404,detail="User not found")
     return user
 
-@app.get("/boardings/{uni_id}", response_model=ist[BoardingBase], status_code=status.HTTP_200_OK)
+
+
+@app.get("/boardings/{uni_id}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
 async def get_boardings_by_uni(uni_id: int, db: db_dependancy):
     try:
         if not uni_id:
             raise HTTPException(status_code=400, detail="University ID is required")
         boardings = db.query(models.Boarding).filter(models.Boarding.uni_id == uni_id).all()
+
         if not boardings:
             raise HTTPException(status_code=404, detail="No boardings found for this university")
         return boardings

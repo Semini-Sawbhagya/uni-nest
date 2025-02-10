@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-URL_DATABSE = 'mysql+pymysql://nipun:1234@localhost:3306/uni_nest'
+URL_DATABSE = 'mysql+pymysql://root:123456@localhost:3306/uni_nest'
  
 engine = create_engine(URL_DATABSE)
 
