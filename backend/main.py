@@ -47,10 +47,10 @@ class UserLogin(BaseModel):
     password: str
 
 class PaymentBase(BaseModel):
-    payment_id: int
+  #  payment_id: int
     amount: float
-    date: str
-    timestamp: str
+  #  date: str
+   # timestamp: str
     user_id: str
 
 class NotificationBase(BaseModel):
@@ -221,6 +221,21 @@ async def get_boardings_by_uni_price_and_type(uni_id: int, price_range: str, typ
     except Exception as e:
         print(f"Error fetching boardings: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+@app.post("/student-payment/")
+def make_payment(payment: PaymentBase, db: Session = Depends(get_db)):
+    try:
+        query = text("CALL Add_Student_Payment(:user_id, :amount)")
+        db.execute(query, {
+            "user_id": payment.user_id,
+            "amount": payment.amount,
+        })
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+    return {"message": "Payment made successfully"}
 
 @app.post("/student-register/")
 def register_user(user: UserBase, db: Session = Depends(get_db)):
