@@ -2,18 +2,19 @@ from fastapi import FastAPI,Path,HTTPException,Depends,status
 from pydantic import BaseModel
 from typing import Annotated,List
 import models
-from database import engine,get_db
+from models import User,Boarding,University,Payment,Notification,Package,Landlord,Student
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
-from Security.utils import hash_password
+from Security.utils import hash_password, verify_password
 from sqlalchemy.sql import text
 from fastapi.middleware.cors import CORSMiddleware
+from Security.security import create_access_token, get_current_user
+from database import engine,get_db,Base
 
-
-
-app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+app = FastAPI()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 app.add_middleware(
     CORSMiddleware,
@@ -31,9 +32,6 @@ async def welcome():
 async def hello(name):
    return {"Hello": name}
 
-@app.get("/items/")
-async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
-    return {"token": token}
 
 class UniversityBase(BaseModel):
     uni_id: int
@@ -43,6 +41,10 @@ class UserBase(BaseModel):
     user_name: str
     password: str
     email: str
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
 
 class PaymentBase(BaseModel):
     payment_id: int
@@ -237,3 +239,18 @@ def register_user(user: UserBase, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
 
     return {"message": "Student user profile registered successfully"}
+
+@app.post("/login/")
+def login_user(user: UserLogin, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.email == user.email).first()
+    if not db_user or not verify_password(user.password, db_user.password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+
+    if db_user and verify_password(user.password, db_user.password):
+        access_token = create_access_token({"sub": db_user.user_name})
+        return {"message":"Login Success", "access_token": access_token, "token_type": "bearer"}
+    
+@app.get("/protected")
+def protected_route(current_user: str = Depends(get_current_user)):
+    return {"message": f"Hello, {current_user}!"}

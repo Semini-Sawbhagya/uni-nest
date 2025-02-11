@@ -5,6 +5,7 @@ import React from 'react'
 import NavBar from './components/Student/NavBar/NavBar'
 import Home from './components/Student/Home/Home'
 import Footer from './components/Footer/Footer'
+import Login from './pages/Login/Login'
 
 function App() {
   
@@ -15,6 +16,7 @@ function App() {
     <Routes>
       <Route path="/" element={<SignUp />} />
       <Route path='/home' element={<Home/>}/>
+      <Route path='/login' element={<Login/>}/>
       
     </Routes>
     
