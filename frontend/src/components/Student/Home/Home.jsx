@@ -1,27 +1,22 @@
 import React from 'react'
 import './home.css'
 import Header from '../../Student/Header/header'
-//import ExploreMenu from '../../components/ExploreMenu/exploreMenu'
 import { useState } from 'react'
-//import FoodDisplay from '../../components/FoodDisplay/foodDisplay'
-//import AppDownload from '../../components/AppDownload/AppDownload'
-import { useNavigate } from 'react-router-dom'
-
+import SearchBoardings from '../SearchBoardings/SearchBoardings'
+import Navbar from '../NavBar/NavBar'
+import Footer from '../../Footer/Footer'
 const home = () => {
 
-  const navigate = useNavigate();
-
-  const handlelogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  }
   
   return (
+    <>
     <div>
+        <Navbar/>
         <Header/>
-        <button onClick={handlelogout}>Logout</button>
-       
+        <SearchBoardings/>
     </div>
+    <Footer/> 
+    </>
   )
 }
 
