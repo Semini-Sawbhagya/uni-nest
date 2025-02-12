@@ -3,10 +3,16 @@ import './NavBar.css'
 import logo from '../../../assets/logo.png'
 import { Link } from 'react-router-dom'
 import search_icon from '../../../assets/search_icon.png'
+import { useNavigate } from 'react-router-dom'
 const Navbar = () => {
 
-const [menu,setMenu] = useState("home");
+  const [menu,setMenu] = useState("home");
+  const navigate = useNavigate();
 
+  const handlelogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  }
   return (
     <div className='navbar'>
       <Link to='/'><img src={logo} alt="" className="logo"/></Link>
@@ -21,7 +27,9 @@ const [menu,setMenu] = useState("home");
         <div className='navbar-search-icon'>
           
         </div>
+        
         <button>sign in</button>
+        <button onClick={handlelogout}>Logout</button>
       </div>
     </div>
   )
