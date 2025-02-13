@@ -15,15 +15,17 @@ const Login = () => {
         e.preventDefault();
         axios.post('http://localhost:8000/login',{email,password})
         .then(result => {
-          console.log(result)
+          console.log(result.data.message)
           if(result.data.message === "Login Success"){
-            localStorage.setItem('token',result.data.token)
+            localStorage.setItem('token',result.data.access_token)
             navigate('/home')
           }
         })
         .catch(err => console.log(err))
         
     }
+
+    
 
 
 

@@ -7,6 +7,7 @@ import { useState } from 'react'
 //import AppDownload from '../../components/AppDownload/AppDownload'
 import { useNavigate } from 'react-router-dom'
 import NavBar from '../NavBar/NavBar'
+import axios from 'axios'
 
 
 const home = () => {
@@ -19,14 +20,7 @@ const home = () => {
     navigate("/login");
   }
 
-  useEffect(() => {
-    axios.get('http://localhost:8000/protected')
-      .then((response) => setMessages(response.data.message))
-      .catch(() =>{
-        localStorage.removeItem("token");
-        navigate("/login");
-      })
-  }, [navigate]);
+  
 
   return (
     <div>
