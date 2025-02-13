@@ -1,6 +1,5 @@
 import React from "react";
 import "../SignUp/SignUp.css";
-import { Link } from "react-router-dom";
 import axios from 'axios'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,11 +12,11 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8000/login',{email,password})
+        axios.post('http://localhost:8000/login',{email,password},{withCredentials:true})
         .then(result => {
-          console.log(result)
+          console.log(result.data.access_token)
           if(result.data.message === "Login Success"){
-            localStorage.setItem('token',result.data.token)
+            //localStorage.setItem('token',result.data.access_token)
             navigate('/home')
           }
         })
