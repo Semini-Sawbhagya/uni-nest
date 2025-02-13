@@ -8,8 +8,11 @@ from fastapi.security import OAuth2PasswordBearer
 from Security.utils import hash_password, verify_password
 from sqlalchemy.sql import text
 from fastapi.middleware.cors import CORSMiddleware
-from Security.security import create_access_token, get_current_user
+from Security.security import create_access_token, get_current_user, verify_token
 from database import engine,get_db,Base
+from fastapi.responses import RedirectResponse
+from fastapi import Response,Request
+
 
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
@@ -256,7 +259,7 @@ def register_user(user: UserBase, db: Session = Depends(get_db)):
     return {"message": "Student user profile registered successfully"}
 
 @app.post("/login/")
-def login_user(user: UserLogin, db: Session = Depends(get_db)):
+def login_user(user: UserLogin,response: Response ,db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.email == user.email).first()
     if not db_user or not verify_password(user.password, db_user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -264,8 +267,13 @@ def login_user(user: UserLogin, db: Session = Depends(get_db)):
 
     if db_user and verify_password(user.password, db_user.password):
         access_token = create_access_token({"sub": db_user.user_name})
+        response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="lax")
         return {"message":"Login Success", "access_token": access_token, "token_type": "bearer"}
     
 @app.get("/protected")
 def protected_route(current_user: str = Depends(get_current_user)):
     return {"message": f"Hello, {current_user}!"}
+
+@app.get("/home")
+async def home(username: str = Depends(verify_token)):
+    return {"message": f"Welcome, {username}!"}
