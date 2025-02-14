@@ -1,0 +1,63 @@
+.payment {
+  display: flex;
+  align-items: center; /* Vertically align items */
+  justify-content: space-between; /* Add space between image and form */
+  padding: 50px; /* Reduce padding for better responsiveness */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  gap: 20px; /* Add gap between elements */
+}
+
+.payment-class h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: max(4.0vw, 20px); /* Remain scalable */
+}
+
+.payment img {
+  max-width: 300px; /* Set a maximum width for the image */
+  height: auto; /* Maintain the aspect ratio */
+  margin-left: 50px; /* Reduce margin for better responsiveness */
+  flex-shrink: 0; /* Prevent image from shrinking */
+}
+
+.payment-form {
+  flex: 1; /* Allow the form to take up remaining space */
+  max-width: 500px; /* Optional: Limit the width of the form */
+  margin-left: 50px; /* Reduce margin for smaller screens */
+  font-size: medium;
+}
+
+/* Responsive Design: For screens smaller than 768px */
+@media (max-width: 768px) {
+  .payment {
+      flex-direction: column; /* Stack items vertically */
+      align-items: center; /* Center align items */
+      padding: 20px; /* Reduce padding further */
+  }
+
+  .payment img {
+      margin-left: 0; /* Remove left margin */
+      max-width: 50%; /* Allow the image to scale down */
+  }
+
+  .payment-form {
+      margin-left: 0; /* Remove left margin */
+      width: 100%; /* Allow form to take up full width */
+      text-align: center; /* Center align form contents */
+  }
+
+  .payment-class h2 {
+      font-size: 20px; /* Keep headings legible on smaller screens */
+  }
+}
+
+/* Additional: For very small screens (max-width: 480px) */
+@media (max-width: 480px) {
+  .payment {
+      padding: 10px; /* Minimize padding for very small screens */
+  }
+
+  .payment-class h2 {
+      font-size: 18px; /* Slightly smaller font size */
+  }
+}
