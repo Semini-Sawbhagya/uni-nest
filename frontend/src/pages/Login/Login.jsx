@@ -3,6 +3,8 @@ import "../SignUp/SignUp.css";
 import axios from 'axios'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie'
+
 
 
 const Login = () => {
@@ -14,9 +16,16 @@ const Login = () => {
         e.preventDefault();
         axios.post('http://localhost:8000/login',{email,password},{withCredentials:true})
         .then(result => {
-          console.log(result.data.access_token)
+          console.log(result.data)
           if(result.data.message === "Login Success"){
-            //localStorage.setItem('token',result.data.access_token)
+            localStorage.setItem('token',result.data.access_token)
+            Cookies.set('user_id', result.data.user_id, { secure: true, sameSite: 'Strict' });
+            Cookies.set('user_name', result.data.user_name, { secure: true, sameSite: 'Strict' });
+            Cookies.set('accessToken', result.data.access_token, { secure: true, sameSite: 'Strict' });
+            Cookies.set('role', result.data.role, { secure: true, sameSite: 'Strict' });
+          }
+
+          if(result.data.role === "student"){
             navigate('/home')
           }
         })
