@@ -41,7 +41,6 @@
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   width: 350px;
-  backdrop-filter: blur(10px);
   text-align: center;
 }
 
