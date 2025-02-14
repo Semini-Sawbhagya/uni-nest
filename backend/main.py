@@ -8,7 +8,7 @@ from fastapi.security import OAuth2PasswordBearer
 from Security.utils import hash_password, verify_password
 from sqlalchemy.sql import text
 from fastapi.middleware.cors import CORSMiddleware
-from Security.security import create_access_token, get_current_user, verify_token
+from Security.security import create_access_token, get_current_user, verify_token,role_required
 from database import engine,get_db,Base
 from fastapi.responses import RedirectResponse
 from fastapi import Response,Request
@@ -266,9 +266,11 @@ def login_user(user: UserLogin,response: Response ,db: Session = Depends(get_db)
     
 
     if db_user and verify_password(user.password, db_user.password):
-        access_token = create_access_token({"sub": db_user.user_name})
-        response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="lax")
-        return {"message":"Login Success", "access_token": access_token, "token_type": "bearer"}
+        access_token = create_access_token({"sub": db_user.user_name,
+                                            "role": db_user.role})
+        #response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="lax")
+        user_id = db_user.user_id
+        return {"message":"Login Success", "access_token": access_token, "token_type": "bearer","user_id": user_id,"role":db_user.role,"user_name":db_user.user_name}
     
 @app.get("/protected")
 def protected_route(current_user: str = Depends(get_current_user)):
@@ -277,3 +279,7 @@ def protected_route(current_user: str = Depends(get_current_user)):
 @app.get("/home")
 async def home(username: str = Depends(verify_token)):
     return {"message": f"Welcome, {username}!"}
+
+@app.get("/student-home", dependencies=[Depends(role_required("student"))])
+def student_home(current_user: dict = Depends(get_current_user)):
+    return {"message": f"Welcome, {current_user['user_name']}!", "role": "student"}
