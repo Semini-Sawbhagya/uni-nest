@@ -8,7 +8,7 @@ from fastapi.security import OAuth2PasswordBearer
 from Security.utils import hash_password, verify_password
 from sqlalchemy.sql import text
 from fastapi.middleware.cors import CORSMiddleware
-from Security.security import create_access_token, get_current_user, verify_token,role_required
+from Security.security import create_access_token, get_current_user, verify_token,roles_required
 from database import engine,get_db,Base
 from fastapi.responses import RedirectResponse
 from fastapi import Response,Request
@@ -267,7 +267,8 @@ def login_user(user: UserLogin,response: Response ,db: Session = Depends(get_db)
 
     if db_user and verify_password(user.password, db_user.password):
         access_token = create_access_token({"sub": db_user.user_name,
-                                            "role": db_user.role})
+                                            "role": db_user.role,
+                                            "user_id": db_user.user_id})
         #response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="lax")
         user_id = db_user.user_id
         return {"message":"Login Success", "access_token": access_token, "token_type": "bearer","user_id": user_id,"role":db_user.role,"user_name":db_user.user_name}
@@ -280,6 +281,15 @@ def protected_route(current_user: str = Depends(get_current_user)):
 async def home(username: str = Depends(verify_token)):
     return {"message": f"Welcome, {username}!"}
 
-@app.get("/student-home", dependencies=[Depends(role_required("student"))])
-def student_home(current_user: dict = Depends(get_current_user)):
+#@app.get("/student-home", dependencies=[Depends(roles_required("student"))])
+#def student_home(current_user: dict = Depends(get_current_user)):
+#    return {"message": f"Welcome, {current_user['user_name']}!", "role": "student"}
+
+@app.get("/multi-role")
+async def multi_role_route(current_user: dict = Depends(roles_required(["student", "admin"]))):
+    print("Registering /multi-role route")
+    return {"message": f"Welcome, {current_user['user_name']}! You have access to this multi-role route."}
+
+@app.get("/student-home")
+def student_home(current_user: dict = Depends(roles_required(["admin"]))):
     return {"message": f"Welcome, {current_user['user_name']}!", "role": "student"}

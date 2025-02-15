@@ -30,14 +30,12 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 #    except PyJWTError:
 #        raise HTTPException(status_code=401, detail="Invalid token")
     
-def verify_token(request: Request):
-    token = request.cookies.get("access_token")
+def verify_token(token: str = Depends(oauth2_scheme)):
     if not token:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")
-        user_role = payload.get("role")
         if username is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
     except JWTError:
@@ -45,19 +43,21 @@ def verify_token(request: Request):
     return username
 
 
-def get_current_user(token: str):
+def get_current_user(token: str = Depends(oauth2_scheme)):
     """ Decodes the JWT and returns the user data. """
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_name = payload.get("sub")
         user_role = payload.get("role")
+        user_id = payload.get("user_id")
+        
 
         if not user_name or not user_role:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token",
             )
-        return {"user_name": user_name, "user_role": user_role}
+        return {"user_name": user_name, "user_role": user_role,"used_id": user_id}
 
     except JWTError:
         raise HTTPException(
@@ -65,10 +65,9 @@ def get_current_user(token: str):
             detail="Invalid token",
         )
     
-def role_required(required_role: str):
-    """ Dependency to ensure the current user has the required role. """
+def roles_required(allowed_roles: list):
     def check_user_role(current_user: dict = Depends(get_current_user)):
-        if current_user["user_role"] != required_role:
+        if current_user["user_role"] not in allowed_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="You do not have permission to access this resource.",
