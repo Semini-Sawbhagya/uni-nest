@@ -27,6 +27,8 @@ const Login = () => {
 
           if(result.data.role === "student"){
             navigate('/home')
+          }else if(result.data.role === "landlord"){
+            navigate('/landlord-home')
           }
         })
         .catch(err => console.log(err))

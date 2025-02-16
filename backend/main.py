@@ -44,6 +44,7 @@ class UserBase(BaseModel):
     user_name: str
     password: str
     email: str
+    userType: str
 
 class UserLogin(BaseModel):
     email: str
@@ -240,23 +241,25 @@ def make_payment(payment: PaymentBase, db: Session = Depends(get_db)):
 
     return {"message": "Payment made successfully"}
 
-@app.post("/student-register/")
+@app.post("/register")
 def register_user(user: UserBase, db: Session = Depends(get_db)):
     try:
         # Call the stored procedure
-        query = text("CALL db_Create_Student(:username, :email, :password)")
+        query = text("CALL db_Create_Account(:username, :email, :password, :userType)")
         hashed_password = hash_password(user.password)
         db.execute(query, {
             "username": user.user_name,
             "email": user.email,
-            "password": hashed_password
+            "password": hashed_password,
+            "userType": user.userType
         })
         db.commit()
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 
-    return {"message": "Student user profile registered successfully"}
+    return {"message": "User profile registered successfully"}
+
 
 @app.post("/login/")
 def login_user(user: UserLogin,response: Response ,db: Session = Depends(get_db)):
@@ -273,23 +276,26 @@ def login_user(user: UserLogin,response: Response ,db: Session = Depends(get_db)
         user_id = db_user.user_id
         return {"message":"Login Success", "access_token": access_token, "token_type": "bearer","user_id": user_id,"role":db_user.role,"user_name":db_user.user_name}
     
-@app.get("/protected")
-def protected_route(current_user: str = Depends(get_current_user)):
-    return {"message": f"Hello, {current_user}!"}
+#@app.get("/protected")
+#def protected_route(current_user: str = Depends(get_current_user)):
+#    return {"message": f"Hello, {current_user}!"}
 
-@app.get("/home")
-async def home(username: str = Depends(verify_token)):
-    return {"message": f"Welcome, {username}!"}
+#@app.get("/home")
+#async def home(username: str = Depends(verify_token)):
+#    return {"message": f"Welcome, {username}!"}
 
 #@app.get("/student-home", dependencies=[Depends(roles_required("student"))])
 #def student_home(current_user: dict = Depends(get_current_user)):
 #    return {"message": f"Welcome, {current_user['user_name']}!", "role": "student"}
 
+
+
+# an example of using the roles_required dependency
 @app.get("/multi-role")
 async def multi_role_route(current_user: dict = Depends(roles_required(["student", "admin"]))):
     print("Registering /multi-role route")
     return {"message": f"Welcome, {current_user['user_name']}! You have access to this multi-role route."}
 
 @app.get("/student-home")
-def student_home(current_user: dict = Depends(roles_required(["admin"]))):
+def student_home(current_user: dict = Depends(roles_required(["admin","student"]))):
     return {"message": f"Welcome, {current_user['user_name']}!", "role": "student"}
