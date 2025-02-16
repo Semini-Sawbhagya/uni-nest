@@ -4,7 +4,7 @@
   justify-content: flex-end; /* Align form to the right */
   align-items: center;
   min-height: 100vh;
-  background: url(../../assets/background.jpg) no-repeat center center/cover;
+  background: url(../../assets/ns.png) no-repeat center center/cover;
   position: relative;
   padding-right: 37%; /* Adjust for right positioning */
 }
