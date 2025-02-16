@@ -1,12 +1,54 @@
-import React from 'react';
-import './LandlordHome.css'; // Import the CSS file
+import React, { useEffect } from 'react';
+import './LandlordHome.css';
+import Footer from '../Footer/Footer';
+import Navbar from '../Student/NavBar/NavBar';
+import Cookies from 'js-cookie';
+// Import jwt-decode properly
+import { jwtDecode } from 'jwt-decode';
+import { useState } from 'react';
 
-const LandLordHome = () => {
+const LandlordHome = () => {
+  // Move token logic into useEffect
+    const [userName,setUserName] = useState('')
+    const [userId,setUserId] = useState('')
+    const [role,setRole] = useState('')
+
+  useEffect(() => {
+    const token = Cookies.get('accessToken');
+    
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        const userId = decoded.user_id;
+        const role = decoded.role;
+        const userName = decoded.sub;
+        setUserName(userName)
+        setUserId(userId)
+        setRole(role)
+        
+        console.log('User ID:', userId);
+        console.log('Role:', role);
+        
+       /* if (userId) {
+          fetch(`/get_landlord_details/${userId}`)
+            .then((response) => response.json())
+            .then((data) => {
+              console.log('User Details:', data);
+            });
+        } */
+      } catch (error) {
+        console.error('Failed to decode token:', error);
+      }
+    } else {
+      console.log('Token not found in cookies.');
+    }
+  }, []); 
   return (
     <div className="dashboard-container">
       {/* Header */}
       <header className="dashboard-header">
-        <h1>Welcome back, Landlord!</h1>
+        <Navbar/>
+        <h1>Welcome back, {userName}!</h1>
         <p>Manage your properties and students from one place.</p>
       </header>
 
@@ -53,8 +95,9 @@ const LandLordHome = () => {
           <button className="btn-view-plan">View Plan</button>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };
 
-export default LandLordHome;
+export default LandlordHome;
