@@ -122,3 +122,30 @@
 .login-link:hover {
   color: #1d4ed8;
 }
+
+.user-type-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.user-type-button {
+  padding: 10px 20px;
+  border: 2px solid green;
+  border-radius: 5px;
+  background-color: #fff;
+  color: green;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.user-type-button:hover {
+  background-color: #e0ffe0;
+}
+
+.user-type-button.selected {
+  background-color: #b3ffb3;
+  font-weight: bold;
+}

@@ -1,7 +1,7 @@
 import jwt
 from datetime import datetime, timedelta
 from jwt.exceptions import PyJWTError
-from jose import JWTError, jwt
+from jose import JWTError
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException
 from fastapi import Response, Request, status
@@ -57,7 +57,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token",
             )
-        return {"user_name": user_name, "user_role": user_role,"used_id": user_id}
+        return {"user_name": user_name, "user_role": user_role,"user_id": user_id}
 
     except JWTError:
         raise HTTPException(
