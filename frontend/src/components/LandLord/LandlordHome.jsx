@@ -6,6 +6,8 @@ import Cookies from 'js-cookie';
 // Import jwt-decode properly
 import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 
 const LandlordHome = () => {
   // Move token logic into useEffect
@@ -77,12 +79,13 @@ const LandlordHome = () => {
         <div className="action-card">
           <h2>Manage Properties</h2>
           <p>View and manage your boarding places.</p>
-          <button className="btn-view-properties">View Properties</button>
+          <Button className="btn-view-properties"><Link to='/properties' >View Properties</Link></Button>
+          
         </div>
         <div className="action-card">
           <h2>Add New Property</h2>
           <p>List a new boarding place.</p>
-          <button className="btn-add-property">Add Property</button>
+          <Button className="btn-add-property"><Link to='/add-properties'>Add Property</Link></Button>
         </div>
         <div className="action-card">
           <h2>Manage Students</h2>
