@@ -1,0 +1,192 @@
+/* General Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem; /* Added padding for a balanced layout */
+  font-family: 'Arial', sans-serif;
+}
+
+/* Loading and Error States */
+.text-center {
+  font-size: 1.125rem;
+  font-weight: 500;
+  padding: 1rem 0;
+}
+
+.text-red-500 {
+  color: #ef4444;
+}
+
+/* Section Title */
+.text-2xl {
+  font-size: 1.75rem; /* Slightly larger for better readability */
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+  margin-bottom: 1rem;
+}
+
+/* Grid Layout */
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.grid-cols-1 {
+  grid-template-columns: 1fr;
+}
+
+.md\:grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.md\:grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.lg\:grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Search Input */
+input[type="text"] {
+  border: 1px solid #d1d5db;
+  padding: 0.75rem; /* Added padding for better UX */
+  font-size: 1rem;
+  border-radius: 0.75rem;
+  width: 100%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Light shadow for definition */
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+}
+
+/* Card Styling */
+.bg-white {
+  background-color: #ffffff;
+}
+
+.p-4 {
+  padding: 1.5rem;
+}
+
+.rounded-lg {
+  border-radius: 0.75rem;
+}
+
+.shadow {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Enhanced shadow for a modern feel */
+}
+
+.shadow-md {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+/* Property Image */
+img {
+  width: 100%;
+  height: auto;
+  border-bottom: 1px solid #e5e7eb;
+  object-fit: cover;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+/* Availability Badge */
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.rounded-full {
+  border-radius: 9999px;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-white {
+  color: #ffffff;
+}
+
+/* Availability Colors */
+.bg-red-500 {
+  background-color: #ef4444;
+}
+
+.bg-yellow-500 {
+  background-color: #f59e0b;
+}
+
+.bg-green-500 {
+  background-color: #10b981;
+}
+
+/* Buttons */
+button {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  border: none;
+  transition: background-color 0.2s, transform 0.1s ease-in-out;
+}
+
+button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+.bg-blue-500 {
+  background-color: #3b82f6;
+}
+
+.bg-blue-600 {
+  background-color: #2563eb;
+}
+
+.bg-red-500 {
+  background-color: #ef4444;
+}
+
+.bg-red-600 {
+  background-color: #dc2626;
+}
+
+.text-white {
+  color: #ffffff;
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* No Results Message */
+.text-gray-500 {
+  color: #9ca3af;
+}
+
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}

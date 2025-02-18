@@ -19,10 +19,10 @@ const Login = () => {
           console.log(result.data)
           if(result.data.message === "Login Success"){
             localStorage.setItem('token',result.data.access_token)
-            Cookies.set('user_id', result.data.user_id, { secure: true, sameSite: 'Strict' });
-            Cookies.set('user_name', result.data.user_name, { secure: true, sameSite: 'Strict' });
+            //Cookies.set('user_id', result.data.user_id, { secure: true, sameSite: 'Strict' });
+            //Cookies.set('user_name', result.data.user_name, { secure: true, sameSite: 'Strict' });
             Cookies.set('accessToken', result.data.access_token, { secure: true, sameSite: 'Strict' });
-            Cookies.set('role', result.data.role, { secure: true, sameSite: 'Strict' });
+            //Cookies.set('role', result.data.role, { secure: true, sameSite: 'Strict' });
           }
 
           if(result.data.role === "student"){
