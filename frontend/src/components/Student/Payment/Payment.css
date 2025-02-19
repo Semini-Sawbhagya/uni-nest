@@ -1,93 +1,63 @@
-/* Payment container */
-.payment-class {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 20px;
-  background: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  font-family: 'Poppins', sans-serif;
-  text-align: center;
+.payment {
+  display: flex;
+  align-items: center; /* Vertically align items */
+  justify-content: space-between; /* Add space between image and form */
+  padding: 50px; /* Reduce padding for better responsiveness */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  gap: 20px; /* Add gap between elements */
 }
 
 .payment-class h2 {
-  color: #333;
-  margin-bottom: 15px;
-  font-size: 24px;
-}
-
-/* Payment section */
-.payment {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: max(4.0vw, 20px); /* Remain scalable */
 }
 
 .payment img {
-  width: 250px;
-  height: auto;
+  max-width: 300px; /* Set a maximum width for the image */
+  height: auto; /* Maintain the aspect ratio */
+  margin-left: 50px; /* Reduce margin for better responsiveness */
+  flex-shrink: 0; /* Prevent image from shrinking */
 }
 
-/* Form styling */
 .payment-form {
-  width: 100%;
-  padding: 15px;
+  flex: 1; /* Allow the form to take up remaining space */
+  max-width: 500px; /* Optional: Limit the width of the form */
+  margin-left: 50px; /* Reduce margin for smaller screens */
+  font-size: medium;
 }
 
-.payment-form .form-group {
-  margin-bottom: 15px;
-  text-align: left;
-}
-
-.payment-form label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #555;
-  display: block;
-  margin-bottom: 5px;
-}
-
-/* Input fields */
-.payment-form .form-control {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 14px;
-  transition: border-color 0.3s ease;
-}
-
-.payment-form .form-control:focus {
-  border-color: rgb(28, 10, 80);
-  outline: none;
-}
-
-/* Payment button */
-.payment-form .btn-primary {
-  width: 100%;
-  background: rgb(28, 10, 80);
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background 0.3s ease;
-  margin-top: 10px;
-}
-
-.payment-form .btn-primary:hover {
-  background: rgb(28, 10, 80);
-}
-
-/* Responsive Design */
-@media (max-width: 600px) {
-  .payment-class {
-    max-width: 90%;
+/* Responsive Design: For screens smaller than 768px */
+@media (max-width: 768px) {
+  .payment {
+      flex-direction: column; /* Stack items vertically */
+      align-items: center; /* Center align items */
+      padding: 20px; /* Reduce padding further */
   }
 
   .payment img {
-    width: 60px;
+      margin-left: 0; /* Remove left margin */
+      max-width: 50%; /* Allow the image to scale down */
+  }
+
+  .payment-form {
+      margin-left: 0; /* Remove left margin */
+      width: 100%; /* Allow form to take up full width */
+      text-align: center; /* Center align form contents */
+  }
+
+  .payment-class h2 {
+      font-size: 20px; /* Keep headings legible on smaller screens */
+  }
+}
+
+/* Additional: For very small screens (max-width: 480px) */
+@media (max-width: 480px) {
+  .payment {
+      padding: 10px; /* Minimize padding for very small screens */
+  }
+
+  .payment-class h2 {
+      font-size: 18px; /* Slightly smaller font size */
   }
 }
