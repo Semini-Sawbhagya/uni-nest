@@ -1,0 +1,101 @@
+.add-property-container {
+    padding: 24px;
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+    transition: box-shadow 0.3s ease-in-out;
+  }
+  
+  .add-property-container:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .add-property-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    text-align: center;
+    color: #343a40;
+  }
+  
+  .add-property-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .add-property-form label {
+    font-weight: bold;
+    color: #495057;
+  }
+  
+  .add-property-form input,
+  .add-property-form textarea {
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .add-property-form input:focus,
+  .add-property-form textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+  }
+  
+  .add-property-form textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+  
+  .add-property-btn {
+    padding: 14px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, transform 0.1s;
+  }
+  
+  .add-property-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .add-property-btn:active {
+    transform: scale(0.98);
+  }
+  
+  .add-property-btn:focus {
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.8);
+  }
+  
+  @media (max-width: 768px) {
+    .add-property-container {
+      padding: 16px;
+    }
+  
+    .add-property-title {
+      font-size: 24px;
+    }
+  
+    .add-property-form input,
+    .add-property-form textarea {
+      font-size: 14px;
+    }
+  
+    .add-property-btn {
+      font-size: 16px;
+    }
+  }
+  
