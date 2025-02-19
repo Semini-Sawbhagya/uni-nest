@@ -12,6 +12,7 @@ from Security.security import create_access_token, get_current_user, verify_toke
 from database import engine,get_db,Base
 from fastapi.responses import RedirectResponse
 from fastapi import Response,Request
+from typing import Union
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -51,11 +52,15 @@ class UserLogin(BaseModel):
     password: str
 
 class PaymentBase(BaseModel):
-  #  payment_id: int
+    payment_id: int
     amount: float
-  #  date: str
-   # timestamp: str
+    date: str
+    timestamp: str
     user_id: str
+
+class StudentPayment(BaseModel):
+    user_id: str
+    amount: Union[int, float] 
 
 class NotificationBase(BaseModel):
     notification_id: str
@@ -225,9 +230,32 @@ async def get_boardings_by_uni_price_and_type(uni_id: int, price_range: str, typ
     except Exception as e:
         print(f"Error fetching boardings: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+@app.get("/get-landlord-details/{student_id}")
+def get_landlord_details(student_id: str, db: Session = Depends(get_db)):
+    try:
+        # Call procedure with correct number of parameters
+        query = text(
+            "CALL find_landlord_details(:student_id, @landlord_id, @account_no, @name)"
+        )
+        db.execute(query, {"student_id": student_id})
+
+        # Retrieve the stored procedure output values
+        result = db.execute(text("SELECT @landlord_id, @account_no, @name")).fetchone()
+        
+        # Ensure results are valid
+        if not result or result[0] is None:
+            raise HTTPException(status_code=404, detail="Landlord not found")
+
+        return {
+            "landlord_user_id": result[0],
+            "account_no": result[1],
+            "name": result[2]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/student-payment/")
-def make_payment(payment: PaymentBase, db: Session = Depends(get_db)):
+def make_payment(payment: StudentPayment, db: Session = Depends(get_db)):
     try:
         query = text("CALL Add_Student_Payment(:user_id, :amount)")
         db.execute(query, {
@@ -240,6 +268,8 @@ def make_payment(payment: PaymentBase, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
 
     return {"message": "Payment made successfully"}
+
+
 
 @app.post("/register")
 def register_user(user: UserBase, db: Session = Depends(get_db)):
