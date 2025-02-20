@@ -75,8 +75,9 @@ class NotificationBase(BaseModel):
 class PackageBase(BaseModel):
     package_id: str
     amount: float
-    duration: str
+    duration: int
     no_of_boardings: int
+    name: str
 
 class LandlordBase(BaseModel):
     landlord_id: str
@@ -346,3 +347,45 @@ async def get_universities( db: db_dependancy):
     if not universities:
         raise HTTPException(status_code=404, detail="No universities found")
     return universities
+
+@app.get("/landlord_properties/{user_id}",response_model=List[BoardingBase],status_code=status.HTTP_200_OK)
+async def get_boarding_by_user_ID(user_id: str,db:db_dependancy, current_user: dict = Depends(roles_required(["landlord"]))):
+    try:
+        if not user_id:
+            raise HTTPException(status_code=400, detail="User ID is required")
+        query = text("CALL db_get_Landlord_Boardings(:user_id)")
+        result = db.execute(query, {"user_id": user_id}).fetchall()
+        if not result:
+                raise HTTPException(status_code=404, detail="No boardings found for this User")
+        
+        boardings = [
+            BoardingBase(
+                boarding_id=row.boarding_id,
+                uni_id=row.uni_id,
+                landlord_id=row.landlord_id,
+                img=row.img,
+                price_range=row.price_range,
+                location=row.location,
+                ratings=row.ratings,
+                review=row.review,
+                type=row.type,
+                security=row.security,
+                available_space=row.available_space
+            )
+            for row in result
+        ]
+        return boardings
+    except Exception as e:
+        print(f"Error fetching boardings: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+@app.get('/packages',response_model=List[PackageBase],status_code=status.HTTP_200_OK)
+async def get_packages(db:db_dependancy,current_user: dict = Depends(roles_required(["landlord"]))):
+    try:
+        packages = db.query(models.Package).all()
+        if not packages:
+            raise HTTPException(status_code=404, detail="No packages found")
+        return packages
+    except Exception as e:
+        print(f"Error fetching packages: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
