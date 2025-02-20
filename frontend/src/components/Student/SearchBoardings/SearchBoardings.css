@@ -1,52 +1,154 @@
-  .container {
-    padding: 16px;
-    align-items: center;
-  }
-  
-  .heading {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 16px;
-    text-align: center;
-  }
-  
+/* General container styling */
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+
+/* Heading styling */
+.heading {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Input field container */
+.input-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input-container div {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Select field styling */
+.select-field {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: rgb(255, 255, 255);
+  color: #333; /* Ensure text color is dark enough */
+  width: 100%;
+}
+
+.select-field:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.select-field option {
+  background-color: #fff;
+  color: #333; /* Dark text for better contrast */
+}
+
+select {
+  background-color: #fff;
+  color: #333; /* Dark text */
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+select:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+/* Labels */
+label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Input fields */
+.input-field {
+  width: 100%;  /* Ensure it takes full width */
+  padding: 8px; /* Add some padding for better visibility */
+  border: 1px solid #ccc; /* Make sure there's a visible border */
+  border-radius: 4px;
+  background-color: white; /* Ensure background is not transparent */
+  color: black; /* Ensure text is visible */
+  appearance: none; /* Remove default styling (for consistency) */
+}
+.input-field:focus {
+  border-color: rgb(28, 10, 80);
+  outline: none;
+}
+
+/* Search button */
+.button {
+  background: rgb(28, 10, 80);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.button:hover {
+  background: rgb(28, 10, 80);
+}
+
+/* Loading and error messages */
+p {
+  font-size: 14px;
+  color: #444;
+}
+
+.error {
+  color: red;
+  font-weight: 600;
+}
+
+/* Boarding list */
+.boarding-list {
+  margin-top: 20px;
+}
+
+.boarding-item {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.boarding-item p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.boarding-item strong {
+  color: rgb(28, 10, 80);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
   .input-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 16px;
-    
-  }
-  
-  .input-field {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    flex-direction: column;
   }
   
   .button {
-    background-color: #665c35;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
+    width: 100%;
   }
-  
-  .button:hover {
-    background-color: #38321b;
-  }
-  
-  .boarding-list {
-    margin-top: 16px;
-  }
-  
-  .boarding-item {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 16px;
-    margin-bottom: 12px;
-    background-color: #fff;
-    display:inline-table;
-    margin-left: 20px;
-  }
-  
+}
