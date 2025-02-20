@@ -75,8 +75,9 @@ class NotificationBase(BaseModel):
 class PackageBase(BaseModel):
     package_id: str
     amount: float
-    duration: str
+    duration: int
     no_of_boardings: int
+    name: str
 
 class LandlordBase(BaseModel):
     landlord_id: str
@@ -361,4 +362,15 @@ async def get_boarding_by_user_ID(user_id: str,db:db_dependancy, current_user: d
         return boardings
     except Exception as e:
         print(f"Error fetching boardings: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+@app.get('/packages',response_model=List[PackageBase],status_code=status.HTTP_200_OK)
+async def get_packages(db:db_dependancy,current_user: dict = Depends(roles_required(["landlord"]))):
+    try:
+        packages = db.query(models.Package).all()
+        if not packages:
+            raise HTTPException(status_code=404, detail="No packages found")
+        return packages
+    except Exception as e:
+        print(f"Error fetching packages: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")

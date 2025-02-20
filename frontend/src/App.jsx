@@ -9,6 +9,7 @@ import Login from './pages/Login/Login'
 import LandLordHome from './components/LandLord/landlordHome'
 import PropertyListingPage from './components/LandLord/Properties/PropertyListing'
 import AddPropertyPage from './components/LandLord/AddProperties/AddProperties'
+import SubscriptionPlans from './components/LandLord/SubscriptionPlans/SubscriptionPlans'
 
 
 
@@ -23,8 +24,9 @@ function App() {
       <Route path='/home' element={<Home/>}/>
       <Route path='/login' element={<Login/>}/>
       <Route path='/landlord-home' element={<LandLordHome/>}/>
-      <Route path="properties" element = {<PropertyListingPage/>}/>
-      <Route path="add-properties" element={<AddPropertyPage/> } />
+      <Route path="/properties" element = {<PropertyListingPage/>}/>
+      <Route path="/add-properties" element={<AddPropertyPage/> } />
+      <Route path="/packages" element={<SubscriptionPlans />} />
       
       
     </Routes>

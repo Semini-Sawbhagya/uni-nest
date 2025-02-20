@@ -95,7 +95,7 @@ const LandlordHome = () => {
         <div className="action-card">
           <h2>Subscription Plan</h2>
           <p>View or upgrade your current plan.</p>
-          <button className="btn-view-plan">View Plan</button>
+          <Button className="btn-view-plan"><Link to='/packages'>View Plan</Link></Button>
         </div>
       </div>
       <Footer/>

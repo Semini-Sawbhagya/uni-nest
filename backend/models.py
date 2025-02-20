@@ -54,8 +54,9 @@ class Package(Base):
 
     package_id = Column(String(36), primary_key=True, default=generate_uuid)
     amount = Column(DECIMAL(15,2), nullable=False)
-    duration = Column(Date, nullable=False)
+    duration = Column(Integer, nullable=False)
     no_of_boardings = Column(Integer, nullable=False)
+    name = Column(String(50), nullable=False)
     landlords = relationship("Landlord", back_populates="package")
 
 class Landlord(Base):
