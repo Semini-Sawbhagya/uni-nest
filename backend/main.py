@@ -1,3 +1,5 @@
+
+
 from fastapi import FastAPI,Path,HTTPException,Depends,status
 from pydantic import BaseModel
 from typing import Annotated,List
@@ -37,8 +39,6 @@ async def hello(name):
    return {"Hello": name}
 
 
-
-# Pydantic models for request/response validation
 class UniversityBase(BaseModel):
     uni_id: int
     name: str
@@ -201,20 +201,8 @@ async def get_boardings_by_type_and_price(type: str, price_range: str, db: db_de
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-@app.get("/boardings-by-uni-price/{uni_id}/{price_range}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
-async def get_boardings_by_uni_and_price(uni_id: int, price_range: str, db: db_dependancy):
-    try:
-        if not uni_id or not price_range:
-            raise HTTPException(status_code=400, detail="University ID and Price Range are required")
-        boardings = db.query(models.Boarding).filter(
-            models.Boarding.uni_id == uni_id, models.Boarding.price_range == price_range
-        ).all()
-        if not boardings:
-            raise HTTPException(status_code=404, detail="No boardings found according to  the given criteria")
-        return boardings
-    except Exception as e:
-        print(f"Error fetching boardings: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
 
 
 @app.get("/boardings-by-uni-price-type/{uni_id}/{price_range}/{type}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
@@ -233,6 +221,25 @@ async def get_boardings_by_uni_price_and_type(uni_id: int, price_range: str, typ
     except Exception as e:
         print(f"Error fetching boardings: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+@app.get("/get_universities/{uni_id}/", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
+async def get_boardings_by_uni_price_and_type(uni_id: int, price_range: str, type: str, db: db_dependancy):
+    try:
+        if not uni_id or not price_range or not type:
+            raise HTTPException(status_code=400, detail="University ID, Price Range, and Type are required")
+        boardings = db.query(models.Boarding).filter(
+            models.Boarding.uni_id == uni_id,
+            models.Boarding.price_range == price_range,
+            models.Boarding.type == type
+        ).all()
+        if not boardings:
+            raise HTTPException(status_code=404, detail="No boardings found according to  the given criteria")
+        return boardings
+    except Exception as e:
+        print(f"Error fetching boardings: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
 @app.get("/get-landlord-details/{student_id}")
 def get_landlord_details(student_id: str, db: Session = Depends(get_db)):
     try:
@@ -333,6 +340,7 @@ async def multi_role_route(current_user: dict = Depends(roles_required(["student
 def student_home(current_user: dict = Depends(roles_required(["admin","student"]))):
     return {"message": f"Welcome, {current_user['user_name']}!", "role": "student"}
 
+
 @app.get("/landlord_properties/{user_id}",response_model=List[BoardingBase],status_code=status.HTTP_200_OK)
 async def get_boarding_by_user_ID(user_id: str,db:db_dependancy, current_user: dict = Depends(roles_required(["landlord"]))):
     try:
@@ -374,3 +382,12 @@ async def get_packages(db:db_dependancy,current_user: dict = Depends(roles_requi
     except Exception as e:
         print(f"Error fetching packages: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@app.get("/universities", response_model=List[UniversityBase])
+async def get_universities( db: db_dependancy):
+    universities = db.query(models.University).all()
+    if not universities:
+        raise HTTPException(status_code=404, detail="No universities found")
+    return universities
+
