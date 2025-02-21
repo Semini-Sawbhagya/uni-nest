@@ -4,12 +4,13 @@ import "./SearchBoardings.css";
 
 const SearchBoardings = () => {
   const [uniId, setUniId] = useState("");
-  const [type, setType] = useState("");
   const [priceRange, setPriceRange] = useState("");
   const [boardings, setBoardings] = useState([]);
   const [universities, setUniversities] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [types, setTypes] = useState([]); 
+  const [selectedType, setSelectedType] = useState(""); 
 
   useEffect(() => {
     const fetchUniversities = async () => {
@@ -24,6 +25,19 @@ const SearchBoardings = () => {
       }
     };
     fetchUniversities();
+    const fetchTypes = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/types");
+        console.log("Types from API:", response.data);
+        setTypes(response.data); // ✅ Store the array properly
+      } catch (err) {
+        console.error("Error fetching types:", err);
+        setError("Failed to load types.");
+      }
+    };
+    fetchTypes();
+
+
   }, []);
 
   const fetchBoardings = async (endpoint) => {
@@ -89,15 +103,26 @@ const SearchBoardings = () => {
 
         </div>
         <div>
-          <label>Type:</label>
-          <input
-            type="text"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            className="input-field"
-            placeholder="e.g., Apartment"
-          />
-        </div>
+      <label>Type:</label>
+      <select
+        className="select-field"
+        value={selectedType}
+        onChange={(e) => setSelectedType(e.target.value)}
+      >
+        <option value="">Select a Type</option>
+        {types.length > 0 ? (
+          types.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))
+        ) : (
+          <option disabled>Loading types...</option>
+        )}
+      </select>
+
+      {error && <p className="error">{error}</p>}
+    </div>
         <div>
           <label>Price Range:</label>
           <input
