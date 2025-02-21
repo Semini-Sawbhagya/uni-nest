@@ -1,5 +1,3 @@
-
-
 from fastapi import FastAPI,Path,HTTPException,Depends,status
 from pydantic import BaseModel
 from typing import Annotated,List
@@ -39,6 +37,8 @@ async def hello(name):
    return {"Hello": name}
 
 
+
+# Pydantic models for request/response validation
 class UniversityBase(BaseModel):
     uni_id: int
     name: str
@@ -78,7 +78,6 @@ class PackageBase(BaseModel):
     duration: int
     no_of_boardings: int
     name: str
-
 class LandlordBase(BaseModel):
     landlord_id: str
     name: str
@@ -201,7 +200,22 @@ async def get_boardings_by_type_and_price(type: str, price_range: str, db: db_de
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
+@app.get("/universities", response_model=List[UniversityBase])
+async def get_universities( db: db_dependancy):
+    universities = db.query(models.University).all()
+    if not universities:
+        raise HTTPException(status_code=404, detail="No universities found")
+    return universities
 
+@app.get('/types', response_model=List[str])
+async def get_types(db: db_dependancy):
+    types = db.query(models.Boarding.type).distinct().all()
+    types = [t[0] for t in types]  # Extract values from tuples
+    
+    if not types:
+        raise HTTPException(status_code=404, detail="No types found")
+    
+    return types
 
 
 
@@ -339,14 +353,6 @@ async def multi_role_route(current_user: dict = Depends(roles_required(["student
 @app.get("/student-home")
 def student_home(current_user: dict = Depends(roles_required(["admin","student"]))):
     return {"message": f"Welcome, {current_user['user_name']}!", "role": "student"}
-
-
-@app.get("/universities", response_model=List[UniversityBase])
-async def get_universities( db: db_dependancy):
-    universities = db.query(models.University).all()
-    if not universities:
-        raise HTTPException(status_code=404, detail="No universities found")
-    return universities
 
 @app.get("/landlord_properties/{user_id}",response_model=List[BoardingBase],status_code=status.HTTP_200_OK)
 async def get_boarding_by_user_ID(user_id: str,db:db_dependancy, current_user: dict = Depends(roles_required(["landlord"]))):
