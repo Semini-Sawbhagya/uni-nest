@@ -1,19 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './LandlordHome.css';
 import Footer from '../Footer/Footer';
 import Navbar from '../Student/NavBar/NavBar';
 import Cookies from 'js-cookie';
-// Import jwt-decode properly
 import { jwtDecode } from 'jwt-decode';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
 
 const LandlordHome = () => {
-  // Move token logic into useEffect
-    const [userName,setUserName] = useState('')
-    const [userId,setUserId] = useState('')
-    const [role,setRole] = useState('')
+  const [userName, setUserName] = useState('');
+  const [userId, setUserId] = useState('');
+  const [role, setRole] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = Cookies.get('accessToken');
@@ -21,40 +18,29 @@ const LandlordHome = () => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        const userId = decoded.user_id;
-        const role = decoded.role;
-        const userName = decoded.sub;
-        setUserName(userName)
-        setUserId(userId)
-        setRole(role)
-        
-        console.log('User ID:', userId);
-        console.log('Role:', role);
-        
-       /* if (userId) {
-          fetch(`/get_landlord_details/${userId}`)
-            .then((response) => response.json())
-            .then((data) => {
-              console.log('User Details:', data);
-            });
-        } */
+        setUserName(decoded.sub);
+        setUserId(decoded.user_id);
+        setRole(decoded.role);
       } catch (error) {
         console.error('Failed to decode token:', error);
       }
     } else {
       console.log('Token not found in cookies.');
     }
-  }, []); 
+  }, []);
+
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
+
   return (
     <div className="dashboard-container">
-      {/* Header */}
       <header className="dashboard-header">
         <Navbar/>
         <h1>Welcome back, {userName}!</h1>
         <p>Manage your properties and students from one place.</p>
       </header>
 
-      {/* Stats Section */}
       <div className="stats-grid">
         <div className="stat-card">
           <h2>Total Properties</h2>
@@ -74,28 +60,46 @@ const LandlordHome = () => {
         </div>
       </div>
 
-      {/* Actions Section */}
       <div className="actions-grid">
         <div className="action-card">
           <h2>Manage Properties</h2>
           <p>View and manage your boarding places.</p>
-          <Button className="btn-view-properties"><Link to='/properties' >View Properties</Link></Button>
-          
+          <button 
+            className="btn-view-properties"
+            onClick={() => handleNavigation('/properties')}
+          >
+            View Properties
+          </button>
         </div>
         <div className="action-card">
           <h2>Add New Property</h2>
           <p>List a new boarding place.</p>
-          <Button className="btn-add-property"><Link to='/add-properties'>Add Property</Link></Button>
+          <button 
+            className="btn-add-property"
+            onClick={() => handleNavigation('/add-properties')}
+          >
+            Add Property
+          </button>
         </div>
         <div className="action-card">
           <h2>Manage Students</h2>
           <p>View and manage student assignments.</p>
-          <button className="btn-view-students">View Students</button>
+          <button 
+            className="btn-view-students"
+            onClick={() => handleNavigation('/add-properties')}
+          >
+            View Students
+          </button>
         </div>
         <div className="action-card">
           <h2>Subscription Plan</h2>
           <p>View or upgrade your current plan.</p>
-          <Button className="btn-view-plan"><Link to='/packages'>View Plan</Link></Button>
+          <button 
+            className="btn-view-plan"
+            onClick={() => handleNavigation('/packages')}
+          >
+            View Plan
+          </button>
         </div>
       </div>
       <Footer/>
