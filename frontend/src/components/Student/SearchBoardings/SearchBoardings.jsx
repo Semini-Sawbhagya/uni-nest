@@ -4,7 +4,8 @@ import "./SearchBoardings.css";
 
 const SearchBoardings = () => {
   const [uniId, setUniId] = useState("");
-  const [priceRange, setPriceRange] = useState("");
+  const [priceRanges, setPriceRange] = useState([]);
+  const [selectedPriceRange, setSelectedPriceRange] = useState("");
   const [boardings, setBoardings] = useState([]);
   const [universities, setUniversities] = useState([]);
   const [error, setError] = useState("");
@@ -29,14 +30,24 @@ const SearchBoardings = () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/types");
         console.log("Types from API:", response.data);
-        setTypes(response.data); // ✅ Store the array properly
+        setTypes(response.data); 
       } catch (err) {
         console.error("Error fetching types:", err);
         setError("Failed to load types.");
       }
     };
     fetchTypes();
-
+    const fetchPrice_Range = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/price-ranges");
+        console.log("Types from API:", response.data);
+        setPriceRange(response.data); 
+      } catch (err) {
+        console.error("Error fetching price-range:", err);
+        setError("Failed to load price-range.");
+      }
+    };
+    fetchPrice_Range();
 
   }, []);
 
@@ -60,31 +71,30 @@ const SearchBoardings = () => {
   };
 
   const handleSearch = () => {
-    if (!uniId && !type && !priceRange) {
+    if (!uniId && !selectedType && !selectedPriceRange) {  // Fix: replaced `type` with `selectedType`
       setError("Please select at least one filter.");
       return;
     }
     let url = "http://127.0.0.1:8000/";
-
-    if (uniId && type && priceRange) {
-      url += `boardings-by-uni-price-type/${uniId}/${priceRange}/${type}`;
-    } else if (uniId && type) {
-      url += `boardings-by-uni-type/${uniId}/${type}`;
-    } else if (uniId && priceRange) {
-      url += `boardings-by-uni-price/${uniId}/${priceRange}`;
+  
+    if (uniId && selectedType && selectedPriceRange) {  // Fix here too
+      url += `boardings-by-uni-price-type/${uniId}/${selectedPriceRange}/${selectedType}`;
+    } else if (uniId && selectedType) {
+      url += `boardings-by-uni-type/${uniId}/${selectedType}`;
+    } else if (uniId && selectedPriceRange) {
+      url += `boardings-by-uni-price/${uniId}/${selectedPriceRange}`;
     } else if (uniId) {
       url += `boardings/${uniId}`;
-    } else if (type && priceRange) {
-      url += `boardings-by-type-price/${type}/${priceRange}`;
-    } else if (type) {
-      url += `boardings-type/${type}`;
-    } else if (priceRange) {
-      url += `boardings-price_range/${priceRange}`;
+    } else if (selectedType && selectedPriceRange) {
+      url += `boardings-by-type-price/${selectedType}/${selectedPriceRange}`;
+    } else if (selectedType) {
+      url += `boardings-type/${selectedType}`;
+    } else if (selectedPriceRange) {
+      url += `boardings-price_range/${selectedPriceRange}`;
     }
-
+  
     fetchBoardings(url);
   };
-
   return (
     <div className="container">
       <h1 className="heading">Search Boarding Places</h1>
@@ -125,13 +135,23 @@ const SearchBoardings = () => {
     </div>
         <div>
           <label>Price Range:</label>
-          <input
-            type="text"
-            value={priceRange}
-            onChange={(e) => setPriceRange(e.target.value)}
-            className="input-field"
-            placeholder="e.g., 5000-10000"
-          />
+          <select
+            className="select-field"
+            value={selectedPriceRange}
+            onChange={(e) => setSelectedPriceRange(e.target.value)}
+          >
+            <option value="">Select a Price Range</option>
+            {priceRanges.length > 0 ? (
+              priceRanges.map((priceRange) => (
+                <option key={priceRange} value={priceRange}>
+                  {priceRange}
+                </option>
+              ))
+            ) : (
+              <option disabled>Loading price range...</option>
+            )}
+      </select>
+
         </div>
       </div>
       <button onClick={handleSearch} className="button">

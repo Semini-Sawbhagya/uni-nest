@@ -217,6 +217,14 @@ async def get_types(db: db_dependancy):
     
     return types
 
+@app.get('/price-ranges', response_model=List[str])
+async def get_price_ranges(db: db_dependancy):
+    price_ranges = db.query(models.Boarding.price_range).distinct().all()
+    price_ranges = [p[0] for p in price_ranges]
+
+    if not price_ranges:
+        raise HTTPException(status_code=404, detail="No types found")
+    return price_ranges
 
 
 @app.get("/boardings-by-uni-price-type/{uni_id}/{price_range}/{type}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
