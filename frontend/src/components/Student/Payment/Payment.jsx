@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import './Payment.css';
 import { Form, Button } from 'react-bootstrap';
 import BankCard from '../../../assets/bank_card.png';
+import Navbar from '../NavBar/NavBar';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
 const Payment = () => {
   const [userId, setUserId] = useState('');
+  const [userName,setUserName]=useState('');
   const [landLordUserId, setLandLordUserId] = useState('');
   const [amount, setAmount] = useState('');
   const [landlordAcountNo, setLandlordAccountNo] = useState('');
@@ -18,7 +20,9 @@ const Payment = () => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
+        console.log("Decoded token:", decoded);  // ✅ Debugging: Check if token is decoded correctly
         setUserId(decoded.user_id);
+        setUserName(decoded.sub);
       } catch (error) {
         console.error('Failed to decode token:', error);
       }
@@ -69,7 +73,14 @@ const Payment = () => {
   };
 
   return (
+    <div>
+       <Navbar/>
     <div className='payment-class'>
+      <header className="dashboard-header">
+        
+        <h1>Hi!, {userName}!</h1>
+        <p>Secure & Convenient Payment – Complete Your Order Now!</p>
+      </header>
       <h2>Payment</h2>
       <div className='payment'>
         <img src={BankCard} alt="" />
@@ -106,6 +117,7 @@ const Payment = () => {
           <Button variant="primary" type="submit">Pay Now</Button>
         </Form>
       </div>
+    </div>
     </div>
   );
 }
