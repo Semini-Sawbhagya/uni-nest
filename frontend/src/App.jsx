@@ -10,6 +10,7 @@ import LandLordHome from './components/LandLord/landlordHome'
 import PropertyListingPage from './components/LandLord/Properties/PropertyListing'
 import AddPropertyPage from './components/LandLord/AddProperties/AddProperties'
 import SubscriptionPlans from './components/LandLord/SubscriptionPlans/SubscriptionPlans'
+import Payment from './components/Student/Payment/Payment'
 
 
 
@@ -27,7 +28,7 @@ function App() {
       <Route path="/properties" element = {<PropertyListingPage/>}/>
       <Route path="/add-properties" element={<AddPropertyPage/> } />
       <Route path="/packages" element={<SubscriptionPlans/>} />
-      
+      <Route path="/payment" element={<Payment/>} />
       
     </Routes>
     

@@ -5,7 +5,7 @@ import { useState } from 'react'
 import SearchBoardings from '../SearchBoardings/SearchBoardings'
 import Navbar from '../NavBar/NavBar'
 import Footer from '../../Footer/Footer'
-import Payment from '../Payment/Payment'
+
 const home = () => {
 
   
@@ -15,7 +15,7 @@ const home = () => {
         <Navbar/>
         <Header/>
         <SearchBoardings/>
-        <Payment/>
+        
     </div>
     <Footer/> 
     </>
