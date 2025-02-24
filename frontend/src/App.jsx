@@ -10,9 +10,11 @@ import LandLordHome from './components/LandLord/landlordHome'
 import PropertyListingPage from './components/LandLord/Properties/PropertyListing'
 import AddPropertyPage from './components/LandLord/AddProperties/AddProperties'
 import SubscriptionPlans from './components/LandLord/SubscriptionPlans/SubscriptionPlans'
+
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import UnauthorizedPage from './pages/Unauthorized'
+import Payment from './components/Student/Payment/Payment'
 
 
 
@@ -32,8 +34,7 @@ function App() {
       <Route path="/add-properties" element={<AddPropertyPage/> } />
       <Route path="/packages" element={<SubscriptionPlans/>} />
       <Route path="/unauthorized" element={<UnauthorizedPage/>} />
-      
-      
+      <Route path="/payment" element={<Payment/>} />      
     </Routes>
     </AuthProvider>
     

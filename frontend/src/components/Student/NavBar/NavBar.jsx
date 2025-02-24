@@ -17,9 +17,9 @@ const Navbar = () => {
     <div className='navbar'>
       <Link to='/'><img src={logo} alt="" className="logo"/></Link>
       <ul className="navbar-menu">
-      <Link to='/' onClick={()=>setMenu("home")} className={menu==="home"?"active":""}>home</Link>
-      <a href='#explore-menu' onClick={()=>setMenu("menu")}className={menu==="menu"?"active":""}>menu</a>
-      <a href='#app-download' onClick={()=>setMenu("mobile-app")}className={menu==="mobile-app"?"active":""}>mobile-app</a>
+      <Link to='/home' onClick={()=>setMenu("home")} className={menu==="home"?"active":""}>home</Link>
+      <Link to='/payment' onClick={()=>setMenu("payment")} className={menu==="payment"?"active":""}>payment</Link>
+      <a href='#app-download' onClick={()=>setMenu("about-us")}className={menu==="mobile-app"?"active":""}>About us</a>
       <a href='#footer' onClick={()=>setMenu("contact-us")}className={menu==="contact-us"?"active":""}>contact us</a>
       </ul>
       <div className="navbar-right">
