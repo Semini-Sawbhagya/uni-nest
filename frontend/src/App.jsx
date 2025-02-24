@@ -29,12 +29,12 @@ function App() {
       <Route path="/" element={<SignUp />} />
       <Route path='/home' element={<ProtectedRoute allowedRoles={['student']}><Home/></ProtectedRoute>}/>
       <Route path='/login' element={<Login/>}/>
-      <Route path='/landlord-home' element={<LandLordHome/>}/>
-      <Route path="/properties" element = {<PropertyListingPage/>}/>
-      <Route path="/add-properties" element={<AddPropertyPage/> } />
-      <Route path="/packages" element={<SubscriptionPlans/>} />
+      <Route path='/landlord-home' element={<ProtectedRoute allowedRoles={['landlord']}><LandLordHome/></ProtectedRoute>}/>
+      <Route path="/properties" element = {<ProtectedRoute allowedRoles={['landlord']}><PropertyListingPage/></ProtectedRoute>}/>
+      <Route path="/add-properties" element={<ProtectedRoute allowedRoles={['landlord']}><AddPropertyPage/></ProtectedRoute> } />
+      <Route path="/packages" element={<ProtectedRoute allowedRoles={['landlord']}><SubscriptionPlans/></ProtectedRoute>} />
       <Route path="/unauthorized" element={<UnauthorizedPage/>} />
-      <Route path="/payment" element={<Payment/>} />      
+      <Route path="/payment" element={<ProtectedRoute allowedRoles={['student']}><Payment/></ProtectedRoute>} />      
     </Routes>
     </AuthProvider>
     
