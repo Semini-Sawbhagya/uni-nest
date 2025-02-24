@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie'
+import { useAuth } from '../../context/AuthContext'
 
 
 
@@ -11,6 +12,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -18,10 +20,12 @@ const Login = () => {
         .then(result => {
           console.log(result.data)
           if(result.data.message === "Login Success"){
-            localStorage.setItem('token',result.data.access_token)
+
+            login(result.data.access_token);
+            //localStorage.setItem('token',result.data.access_token)
             //Cookies.set('user_id', result.data.user_id, { secure: true, sameSite: 'Strict' });
             //Cookies.set('user_name', result.data.user_name, { secure: true, sameSite: 'Strict' });
-            Cookies.set('accessToken', result.data.access_token, { secure: true, sameSite: 'Strict' });
+            // Cookies.set('accessToken', result.data.access_token, { secure: true, sameSite: 'Strict' });
             //Cookies.set('role', result.data.role, { secure: true, sameSite: 'Strict' });
           }
 
@@ -29,6 +33,8 @@ const Login = () => {
             navigate('/home')
           }else if(result.data.role === "landlord"){
             navigate('/landlord-home')
+          }else{
+            navigate('/')
           }
         })
         .catch(err => console.log(err))
