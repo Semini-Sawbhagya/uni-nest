@@ -403,3 +403,14 @@ async def get_packages(db:db_dependancy,current_user: dict = Depends(roles_requi
     except Exception as e:
         print(f"Error fetching packages: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+@app.get('/boarding_details/{boarding_id}',response_model=BoardingBase,status_code=status.HTTP_200_OK)
+async def get_boarding_details( boarding_id: str,db:db_dependancy,current_user: dict = Depends(roles_required(["student"]))):
+    try:
+        boarding = db.query(models.Boarding).filter(models.Boarding.boarding_id == boarding_id).first()
+        if not boarding:
+            raise HTTPException(status_code=404, detail="Boarding not found")
+        return boarding
+    except Exception as e:
+        print(f"Error fetching boarding: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
