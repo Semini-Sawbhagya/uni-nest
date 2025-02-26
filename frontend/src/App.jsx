@@ -15,7 +15,7 @@ import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import UnauthorizedPage from './pages/Unauthorized'
 import Payment from './components/Student/Payment/Payment'
-
+import Boarding from './components/Student/Boarding/Boarding'
 
 
 function App() {
@@ -35,9 +35,9 @@ function App() {
       <Route path="/packages" element={<ProtectedRoute allowedRoles={['landlord']}><SubscriptionPlans/></ProtectedRoute>} />
       <Route path="/unauthorized" element={<UnauthorizedPage/>} />
       <Route path="/payment" element={<ProtectedRoute allowedRoles={['student']}><Payment/></ProtectedRoute>} />      
+      <Route path="/boarding/:id" element={<ProtectedRoute allowedRoles={['student']}><Boarding/></ProtectedRoute>}/>
     </Routes>
     </AuthProvider>
-    
     </BrowserRouter>
     
   )

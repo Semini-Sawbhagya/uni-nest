@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./SearchBoardings.css";
+import { Navigate, useNavigate } from "react-router-dom";
+
 
 const SearchBoardings = () => {
   const [uniId, setUniId] = useState("");
@@ -12,6 +14,7 @@ const SearchBoardings = () => {
   const [loading, setLoading] = useState(false);
   const [types, setTypes] = useState([]); 
   const [selectedType, setSelectedType] = useState(""); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUniversities = async () => {
@@ -95,6 +98,9 @@ const SearchBoardings = () => {
   
     fetchBoardings(url);
   };
+  const handleBoarding = (boardingId) => {
+    navigate(`/boarding/${boardingId}`); // Navigate to the specific boarding's page
+  };
   return (
     <div className="container">
       <h1 className="heading">Search Boarding Places</h1>
@@ -162,13 +168,15 @@ const SearchBoardings = () => {
       <div className="boarding-list">
         {Array.isArray(boardings) && boardings.length > 0 ? (
           boardings.map((boarding) => (
-            <div key={boarding.boarding_id} className="boarding-item">
-              <p><strong>ID:</strong> {boarding.boarding_id}</p>
-              <p><strong>Type:</strong> {boarding.type || 'N/A'}</p>
-              <p><strong>Price Range:</strong> {boarding.price_range || 'N/A'}</p>
-              <p><strong>Location:</strong> {boarding.location || 'N/A'}</p>
-              <p><strong>Ratings:</strong> {boarding.ratings || 'N/A'}</p>
-            </div>
+            <button key={boarding.boarding_id} onClick={() => handleBoarding(boarding.boarding_id)}>
+              <div className="boarding-item">
+                <p><strong>ID:</strong> {boarding.boarding_id}</p>
+                <p><strong>Type:</strong> {boarding.type || 'N/A'}</p>
+                <p><strong>Price Range:</strong> {boarding.price_range || 'N/A'}</p>
+                <p><strong>Location:</strong> {boarding.location || 'N/A'}</p>
+                <p><strong>Ratings:</strong> {boarding.ratings || 'N/A'}</p>
+              </div>
+            </button>
           ))
         ) : (
           <p>No boardings found.</p>
