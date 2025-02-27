@@ -72,7 +72,14 @@ const BoardingDetails = () => {
       <p><strong>Location:</strong> {boarding.location}</p>
       <p><strong>Latitude:</strong> {coords.lat}</p>
       <p><strong>Longitude:</strong> {coords.lng}</p>
-
+      <p><strong>University ID:</strong> {boarding.uni_id}</p>
+      <p><strong>Landlord ID:</strong> {boarding.landlord_id}</p>
+      <p><strong>Type:</strong> {boarding.type}</p>
+      <p><strong>Price Range:</strong> {boarding.price_range}</p>
+      <p><strong>Ratings:</strong> {boarding.ratings}</p>
+      <p><strong>Review:</strong> {boarding.review}</p>
+      <p><strong>Security:</strong> {boarding.security}</p>
+      <p><strong>Available Space:</strong> {boarding.available_space}</p>
       <div>
         <MapContainer
           center={coords}
