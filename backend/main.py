@@ -414,3 +414,22 @@ async def get_boarding_details( boarding_id: str,db:db_dependancy,current_user: 
     except Exception as e:
         print(f"Error fetching boarding: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+@app.get("/get-my-boarding-id/{student_user_id}")
+def get_my_boarding_id(student_user_id: str, db: Session = Depends(get_db)):
+    try:
+        # Call the stored procedure with an output parameter
+        db.execute(text("CALL get_my_boarding_id(:student_id, @my_boarding_id)"), 
+                   {"student_id": student_user_id})
+        
+        # Fetch the output parameter value
+        result = db.execute(text("SELECT @my_boarding_id")).fetchone()
+        
+        # Ensure the result is valid
+        if not result or result[0] is None:
+            raise HTTPException(status_code=404, detail="Boarding ID not found")
+
+        return {"my_boarding_id": result[0]}
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
