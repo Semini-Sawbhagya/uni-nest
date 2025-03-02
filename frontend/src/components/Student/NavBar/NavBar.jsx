@@ -4,14 +4,16 @@ import logo from '../../../assets/logo.png'
 import { Link } from 'react-router-dom'
 import search_icon from '../../../assets/search_icon.png'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../../context/AuthContext'
 const Navbar = () => {
 
   const [menu,setMenu] = useState("home");
   const navigate = useNavigate();
+  const {logout} = useAuth();
 
   const handlelogout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    logout();
   }
   return (
     <div className='navbar'>
