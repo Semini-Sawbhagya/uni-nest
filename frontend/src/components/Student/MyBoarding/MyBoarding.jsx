@@ -4,7 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import "leaflet/dist/leaflet.css";
-import "./Boarding.css";
+import "./MyBoarding.css";
 
 const BoardingDetails = () => {
   const { id } = useParams();
@@ -62,7 +62,7 @@ const BoardingDetails = () => {
 
   return (
     <div className="boarding-details">
-      <h1>Boarding Details</h1>
+      <h1>My Boarding Details</h1>
       <img
         src={`http://127.0.0.1:8000/images/${boarding.img}`}
         alt="Boarding Place"
