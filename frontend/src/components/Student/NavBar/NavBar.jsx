@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import './NavBar.css';
 import logo from '../../../assets/logo.png';
@@ -7,16 +8,22 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from "js-cookie";
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
+import { useAuth } from '../../../context/AuthContext'
+
 
 const Navbar = () => {
   const [menu, setMenu] = useState("home");
   const navigate = useNavigate();
+  const {logout} = useAuth();
+
   const [userId, setUserId] = useState('');
   const [boardingId, setBoardingId] = useState('');
 
+
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    logout();
+  }
   };
 
   useEffect(() => {
@@ -50,6 +57,7 @@ const Navbar = () => {
     }
   };
 
+
   return (
     <div className='navbar'>
       <Link to='/'><img src={logo} alt="logo" className="logo"/></Link>
@@ -77,6 +85,6 @@ const Navbar = () => {
       </div>
     </div>
   );
-};
+
 
 export default Navbar;
