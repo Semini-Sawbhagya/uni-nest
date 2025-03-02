@@ -23,7 +23,6 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     logout();
-  }
   };
 
   useEffect(() => {
@@ -86,5 +85,5 @@ const Navbar = () => {
     </div>
   );
 
-
+}
 export default Navbar;
