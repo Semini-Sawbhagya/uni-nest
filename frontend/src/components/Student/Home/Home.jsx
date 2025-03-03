@@ -1,6 +1,6 @@
 import React from 'react'
 import './home.css'
-import Header from '../../Student/Header/header'
+import Header from '../Header/Header'
 import { useState } from 'react'
 import SearchBoardings from '../SearchBoardings/SearchBoardings'
 import Navbar from '../NavBar/NavBar'
