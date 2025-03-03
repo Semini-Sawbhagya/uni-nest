@@ -433,3 +433,4 @@ def get_my_boarding_id(student_user_id: str, db: Session = Depends(get_db)):
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
