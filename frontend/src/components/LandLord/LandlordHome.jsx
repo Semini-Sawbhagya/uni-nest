@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LandlordHome.css';
 import Footer from '../Footer/Footer';
-import Navbar from '../Student/NavBar/NavBar';
+import Navbar from '../LandLord/NavBar/NavBar'
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
