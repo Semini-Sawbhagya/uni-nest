@@ -104,3 +104,10 @@ class Student(Base):
     user_id = Column(String(36), ForeignKey("user.user_id"), nullable=False)
     boarding = relationship("Boarding", back_populates="students")
     user = relationship("User", back_populates="student")
+
+class StudentReview(Base):
+    __tablename__ = "ratings"
+
+    student_id =  student_id = Column(String(36), primary_key=True, default=generate_uuid)
+    ratings = Column(DECIMAL(3,2))
+    review = Column(String(255), nullable=False)
