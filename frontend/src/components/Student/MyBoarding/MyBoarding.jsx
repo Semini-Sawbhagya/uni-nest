@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import "leaflet/dist/leaflet.css";
 import "./MyBoarding.css";
+import Navbar from "../NavBar/NavBar";
 
 const BoardingDetails = () => {
   const { id } = useParams();
@@ -61,6 +62,8 @@ const BoardingDetails = () => {
   if (!boarding) return <p>No details found.</p>;
 
   return (
+    <div>
+      <Navbar />
     <div className="boarding-details">
       <h1>My Boarding Details</h1>
       <img
@@ -95,6 +98,7 @@ const BoardingDetails = () => {
           </Marker>
         </MapContainer>
       </div>
+    </div>
     </div>
   );
 };
