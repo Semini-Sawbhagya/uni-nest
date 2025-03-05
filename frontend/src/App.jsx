@@ -17,7 +17,7 @@ import UnauthorizedPage from './pages/Unauthorized'
 import Payment from './components/Student/Payment/Payment'
 import Boarding from './components/Student/Boarding/Boarding'
 import MyBoarding from './components/Student/MyBoarding/MyBoarding'
-
+import ReviewRating from './components/Student/ReviewRating/ReviewRating'
 
 
 function App() {
@@ -39,6 +39,7 @@ function App() {
       <Route path="/payment" element={<ProtectedRoute allowedRoles={['student']}><Payment/></ProtectedRoute>} />      
       <Route path="/boarding/:id" element={<ProtectedRoute allowedRoles={['student']}><Boarding/></ProtectedRoute>}/>
       <Route path="/my-boarding/:id" element={<ProtectedRoute allowedRoles={['student']}><MyBoarding/></ProtectedRoute>}/>
+      <Route path="/review-rating" element={<ProtectedRoute allowedRoles={['student']}><ReviewRating/></ProtectedRoute>}/>
     </Routes>
     </AuthProvider>
     </BrowserRouter>

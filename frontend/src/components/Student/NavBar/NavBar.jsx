@@ -72,9 +72,9 @@ const Navbar = () => {
         >
           My Boarding
         </Link>
-        
+        <Link to='/review-rating' onClick={() => setMenu("review-rating")} className={menu === "review-rating" ? "active" : ""}>Reviews & Ratings</Link>
         <a href='#app-download' onClick={() => setMenu("about-us")} className={menu === "about-us" ? "active" : ""}>About Us</a>
-        <a href='#footer' onClick={() => setMenu("contact-us")} className={menu === "contact-us" ? "active" : ""}>Contact Us</a>
+        
       </ul>
       
       <div className="navbar-right">

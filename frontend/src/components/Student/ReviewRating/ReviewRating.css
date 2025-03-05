@@ -1,0 +1,102 @@
+/* Review Rating Container */
+.review-container {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    align-items: center;
+    margin-top: 10%;
+    background-color:rgb(28, 10, 80);
+  }
+  
+  /* Heading */
+  .review-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  
+  /* Input and Textarea */
+  .review-input, .review-textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #4a5568;
+    background-color: #f9fafb;
+    transition: border-color 0.3s ease;
+  }
+  
+  /* Star Rating */
+  .review-stars {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .review-star {
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .selected {
+    color: #f59e0b; /* Gold color */
+  }
+  
+  .deselected {
+    color: #d1d5db; /* Gray color */
+  }
+  
+  /* Submit Button */
+  .review-button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    background-color: #3e3f41;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+  }
+  
+  .review-button:hover {
+    background-color: #ffffff;
+  }
+  
+  /* Review Cards */
+  .review-card {
+    background-color: #ffffff;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .review-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+  
+  .review-card-content {
+    padding: 1rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 600px) {
+    .review-stars {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+  
