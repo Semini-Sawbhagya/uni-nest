@@ -2,15 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LandlordHome.css';
 import Footer from '../Footer/Footer';
-import Navbar from '../Student/NavBar/NavBar';
+import Navbar from '../LandLord/NavBar/NavBar'
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
+import Header from '../LandLord/Header/Header';
 
 const LandlordHome = () => {
   const [userName, setUserName] = useState('');
+  const [properties, setProperties] = useState([]);
   const [userId, setUserId] = useState('');
   const [role, setRole] = useState('');
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = Cookies.get('accessToken');
@@ -20,14 +25,37 @@ const LandlordHome = () => {
         const decoded = jwtDecode(token);
         setUserName(decoded.sub);
         setUserId(decoded.user_id);
-        setRole(decoded.role);
+        
+        axios.get(`http://localhost:8000/landlord_properties/${decoded.user_id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+          .then((response) => {
+            setProperties(response.data);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error('Error fetching properties:', error);
+            setError('Failed to load properties');
+            setLoading(false);
+          });
       } catch (error) {
         console.error('Failed to decode token:', error);
+        setError('Authentication error');
+        setLoading(false);
       }
     } else {
-      console.log('Token not found in cookies.');
+      setError('No authentication token found');
+      setLoading(false);
     }
   }, []);
+
+
+  const totalProperties = properties.length;
+  const totalAvailableSpaces = properties.reduce((sum, property) => 
+    sum + parseInt(property.available_space || 0), 0
+  );
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -39,12 +67,13 @@ const LandlordHome = () => {
         <Navbar/>
         <h1>Welcome back, {userName}!</h1>
         <p>Manage your properties and students from one place.</p>
+        <Header/>
       </header>
 
       <div className="stats-grid">
         <div className="stat-card">
           <h2>Total Properties</h2>
-          <p>3</p>
+          <p>{totalProperties}</p>
         </div>
         <div className="stat-card">
           <h2>Total Students</h2>
@@ -52,7 +81,7 @@ const LandlordHome = () => {
         </div>
         <div className="stat-card">
           <h2>Available Spaces</h2>
-          <p>5</p>
+          <p>{totalAvailableSpaces}</p>
         </div>
         <div className="stat-card">
           <h2>Active Listings</h2>

@@ -40,41 +40,26 @@ const Navbar = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (userId) {
-      fetchBoardingId(userId);
-    }
-  }, [userId]);
-
-  const fetchBoardingId = async (userId) => {
-    try {
-      const response = await axios.get(`http://localhost:8000/get-my-boarding-id/${userId}`);
-      console.log("API Response:", response.data);  // ✅ Debugging: Check if API returns correct data
-      setBoardingId(response.data.my_boarding_id); 
-    } catch (error) {
-      console.error("Error fetching boarding ID:", error);
-    }
-  };
 
 
   return (
     <div className='navbar'>
       <Link to='/'><img src={logo} alt="logo" className="logo"/></Link>
       <ul className="navbar-menu">
-        <Link to='/home' onClick={() => setMenu("home")} className={menu === "home" ? "active" : ""}>Home</Link>
-        <Link to='/payment' onClick={() => setMenu("payment")} className={menu === "payment" ? "active" : ""}>Payment</Link>
+        <Link to='/landlord-home' onClick={() => setMenu("home")} className={menu === "home" ? "active" : ""}>Home</Link>
+        <Link to='/payment' onClick={() => setMenu("payment")} className={menu === "payment" ? "active" : ""}>Manage Students</Link>
         
         {/* Pass the dynamic boardingId in the URL */}
         <Link 
-          to={boardingId ? `/my-boarding/${boardingId}` : "#"}  
-          onClick={() => setMenu("profile")}
-          className={menu === "profile" ? "active" : ""}
+          to='/properties'  
+          onClick={() => setMenu("properties")}
+          className={menu === "properties" ? "active" : ""}
         >
-          My Boarding
+          My Boardings
         </Link>
-        <Link to='/review-rating' onClick={() => setMenu("review-rating")} className={menu === "review-rating" ? "active" : ""}>Reviews & Ratings</Link>
-        <a href='#app-download' onClick={() => setMenu("about-us")} className={menu === "about-us" ? "active" : ""}>About Us</a>
         
+        <a href='#app-download' onClick={() => setMenu("about-us")} className={menu === "about-us" ? "active" : ""}>About Us</a>
+        <a href='#footer' onClick={() => setMenu("contact-us")} className={menu === "contact-us" ? "active" : ""}>Contact Us</a>
       </ul>
       
       <div className="navbar-right">
