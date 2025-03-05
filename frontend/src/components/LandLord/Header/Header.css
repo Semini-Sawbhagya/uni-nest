@@ -1,5 +1,5 @@
 /* Header Section Styling */
-.header {
+.Landlordheader {
   height: 70vh; /* Full viewport height */
   background: url('../../../assets/design.jpg') no-repeat center center/cover;
   position: relative;
@@ -11,7 +11,7 @@
 }
 
 /* Header Content Styling */
-.header-content {
+.Landlordheader-content {
   position: absolute;
   bottom: 10%;
   left: 10%;
@@ -26,7 +26,7 @@
 }
 
 /* Heading Styling */
-.header-content h2 {
+.Landlordheader-content h2 {
   font-size: 3rem;
   font-weight: 600;
   line-height: 1.3;
@@ -34,7 +34,7 @@
 }
 
 /* Paragraph Styling */
-.header-content p {
+.Landlordheader-content p {
   font-size: 1.2rem;
   line-height: 1.6;
   margin-bottom: 20px;
@@ -44,7 +44,7 @@
 }
 
 /* Button Styling */
-.header-content button {
+.Landlordheader-content button {
   padding: 12px 24px;
   background-color: rgb(28, 10, 80);
   color: white;
@@ -56,7 +56,7 @@
   transition: all 0.3s ease;
 }
 
-.header-content button:hover {
+.Landlordheader-content button:hover {
   background-color: rgb(50, 30, 110);
   transform: scale(1.05);
 }
@@ -75,32 +75,32 @@
 
 /* Responsive Design for Tablets and Smaller Screens */
 @media (max-width: 768px) {
-  .header-content {
+  .Landlordheader-content {
     left: 5%;
     right: 5%;
     max-width: 90%;
     bottom: 8%;
   }
 
-  .header-content h2 {
+  .Landlordheader-content h2 {
     font-size: 2.5rem;
   }
 
-  .header-content p {
+  .Landlordheader-content p {
     font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .header-content h2 {
+  .Landlordheader-content h2 {
     font-size: 2rem;
   }
 
-  .header-content p {
+  .Landlordheader-content p {
     font-size: 0.9rem;
   }
 
-  .header-content button {
+  .Landlordheader-content button {
     padding: 10px 20px;
     font-size: 1rem;
   }
