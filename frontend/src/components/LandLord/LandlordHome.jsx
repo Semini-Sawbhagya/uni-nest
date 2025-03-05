@@ -6,6 +6,7 @@ import Navbar from '../LandLord/NavBar/NavBar'
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
+import Header from '../LandLord/Header/Header';
 
 const LandlordHome = () => {
   const [userName, setUserName] = useState('');
@@ -66,6 +67,7 @@ const LandlordHome = () => {
         <Navbar/>
         <h1>Welcome back, {userName}!</h1>
         <p>Manage your properties and students from one place.</p>
+        <Header/>
       </header>
 
       <div className="stats-grid">
