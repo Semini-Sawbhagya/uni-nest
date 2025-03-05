@@ -64,6 +64,12 @@ class StudentPayment(BaseModel):
     user_id: str
     amount: Union[int, float] 
 
+class StudentReview(BaseModel):
+    student_id: str
+    ratings: float
+    review: str
+
+
 class NotificationBase(BaseModel):
     notification_id: str
     user_id: str
@@ -433,3 +439,20 @@ def get_my_boarding_id(student_user_id: str, db: Session = Depends(get_db)):
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+
+@app.post("/student-review/")
+def add_review(review: StudentReview, db: Session = Depends(get_db)):
+    try:
+        query = text("CALL AddReview(:student_id, :ratings, :review)")
+        db.execute(query, {
+            "student_id": review.student_id,
+            "ratings": review.ratings,
+            "review": review.review,
+        })
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+    return {"message": "Add review and ratings successfully"}
