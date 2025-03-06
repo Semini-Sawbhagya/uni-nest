@@ -440,7 +440,25 @@ def get_my_boarding_id(student_user_id: str, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    
+@app.get("/get-student-id/{student_user_id}")
+def get_student_id(student_user_id: str, db: Session = Depends(get_db)):
+    try:
+        # Call the stored procedure with an output parameter
+        db.execute(text("CALL get_student_id(:student_id,@out_student_id)"), 
+                   {"student_id": student_user_id})
+        
+        # Fetch the output parameter value
+        result = db.execute(text("SELECT @out_student_id")).fetchone()
+        
+        # Ensure the result is valid
+        if not result or result[0] is None:
+            raise HTTPException(status_code=404, detail="Student ID not found")
+
+        return {"out_student_id": result[0]}
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+   
 
 @app.post("/student-review/")
 def add_review(review: StudentReview, db: Session = Depends(get_db)):
