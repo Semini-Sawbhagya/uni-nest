@@ -11,6 +11,8 @@ function ManageStudents() {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [userId, setUserId] = useState('');
+  const [studentId, setStudentId] = useState('');
+  const [studentUserId, setStudentUserId] = useState('');
 
   useEffect(() => {
     fetchStudents();

@@ -116,13 +116,6 @@ class StudentBase(BaseModel):
     profile_pic:str
     user_id: str
 
-class StudentDetailBase(BaseModel):
-    boarding_id:str
-    account_no:str
-    contact:int
-    address:str
-    profile_pic:str
-    user_name:str
 
 
 db_dependancy = Annotated[Session,Depends(get_db)]
@@ -474,7 +467,9 @@ async def get_student_details(user_id:str,db:db_dependancy,current_user: dict = 
             raise HTTPException(status_code=404, detail="No students found")
 
         students = [
-            StudentDetailBase(
+            StudentBase(
+                student_id=row.student_id,
+                user_id=row.user_id,
                 boarding_id=row.boarding_id,
                 account_no=row.account_no,
                 contact=row.contact,
