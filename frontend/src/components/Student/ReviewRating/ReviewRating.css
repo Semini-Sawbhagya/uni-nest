@@ -46,10 +46,13 @@
     transition: color 0.3s ease;
   }
   
-  .selected {
-    color: #f59e0b; /* Gold color */
+  .review-star:hover {
+    fill: gold; /* ⭐ Hover effect */
   }
   
+  .selected {
+    fill: gold !important; /* ✅ Ensure fully filled stars */
+  }
   .deselected {
     color: #d1d5db; /* Gray color */
   }
