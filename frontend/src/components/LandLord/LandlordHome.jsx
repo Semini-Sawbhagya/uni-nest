@@ -115,7 +115,7 @@ const LandlordHome = () => {
           <p>View and manage student assignments.</p>
           <button 
             className="btn-view-students"
-            onClick={() => handleNavigation('/add-properties')}
+            onClick={() => handleNavigation('/Manage-students')}
           >
             View Students
           </button>
