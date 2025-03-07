@@ -531,3 +531,24 @@ def delete_student(student_id: str, db: Session = Depends(get_db)):
         db.rollback()
         error_message = str(e.orig) if hasattr(e, "orig") else str(e)
         raise HTTPException(status_code=400, detail=f"MySQL Error: {error_message}")
+    
+@app.delete("/delete-boarding/{boarding_id}")
+def delete_boarding(boarding_id: str, db: Session = Depends(get_db)):
+    try:
+        query = text("CALL delete_boarding(:boarding_id)")
+        result = db.execute(query, {"boarding_id": boarding_id})
+
+        # Fetch the message returned by the stored procedure
+        message = result.fetchall()  # Get all rows returned by the procedure
+
+        db.commit()
+
+        if message:
+            return {"message": message[0][0]}  # Return the first row and first column (your message)
+
+        raise HTTPException(status_code=404, detail=f"No boarding found with ID {boarding_id}")
+
+    except Exception as e:
+        db.rollback()
+        error_message = str(e.orig) if hasattr(e, "orig") else str(e)
+        raise HTTPException(status_code=400, detail=f"MySQL Error: {error_message}")
