@@ -116,6 +116,15 @@ class StudentBase(BaseModel):
     profile_pic:str
     user_id: str
 
+class StudentDetailsBase(BaseModel):
+    student_id: str
+    boarding_id:str
+    account_no:str
+    contact:int
+    address:str
+    profile_pic:str
+    user_id: str
+    user_name:str
 
 
 db_dependancy = Annotated[Session,Depends(get_db)]
@@ -467,7 +476,7 @@ async def get_student_details(user_id:str,db:db_dependancy,current_user: dict = 
             raise HTTPException(status_code=404, detail="No students found")
 
         students = [
-            StudentBase(
+            StudentDetailsBase(
                 student_id=row.student_id,
                 user_id=row.user_id,
                 boarding_id=row.boarding_id,
@@ -483,3 +492,24 @@ async def get_student_details(user_id:str,db:db_dependancy,current_user: dict = 
     except Exception as e:
         print(f"Error fetching student: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+@app.delete("/delete-student/{student_id}")
+def delete_student(student_id: str, db: Session = Depends(get_db)):
+    try:
+        query = text("CALL delete_student(:student_id)")
+        result = db.execute(query, {"student_id": student_id})
+
+        # Fetch the message returned by the stored procedure
+        message = result.fetchall()  # Get all rows returned by the procedure
+
+        db.commit()
+
+        if message:
+            return {"message": message[0][0]}  # Return the first row and first column (your message)
+
+        raise HTTPException(status_code=404, detail=f"No student found with ID {student_id}")
+
+    except Exception as e:
+        db.rollback()
+        error_message = str(e.orig) if hasattr(e, "orig") else str(e)
+        raise HTTPException(status_code=400, detail=f"MySQL Error: {error_message}")
