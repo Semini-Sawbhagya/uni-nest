@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import './PropertyListing.css';
+import Navbar from '../NavBar/NavBar';
 
 const PropertyListing = () => {
   const [userName, setUserName] = useState('');
@@ -67,6 +68,7 @@ const PropertyListing = () => {
   if (error) return <div className="p-4 text-center text-red-500">{error}</div>;
 
   return (
+    <div> <Navbar />
     <div className="container mx-auto p-4">
       <div className="mb-8">
         <h1 className="text-2xl font-bold mb-2">My Properties</h1>
@@ -145,6 +147,7 @@ const PropertyListing = () => {
           No properties found matching your search criteria.
         </div>
       )}
+    </div>
     </div>
   );
 };
