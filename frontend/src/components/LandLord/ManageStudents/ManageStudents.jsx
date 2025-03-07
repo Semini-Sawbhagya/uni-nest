@@ -3,6 +3,7 @@ import axios from 'axios';
 import './ManageStudents.css';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
+import Navbar from '../NavBar/NavBar';
 
 function ManageStudents() {
   const [students, setStudents] = useState([]);
@@ -84,6 +85,7 @@ function ManageStudents() {
   if (error) return <div className="error">{error}</div>;
 
   return (
+    <div><Navbar />
     <div className="manage-students-container">
       <h1>Manage Students</h1>
       
@@ -152,6 +154,7 @@ function ManageStudents() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

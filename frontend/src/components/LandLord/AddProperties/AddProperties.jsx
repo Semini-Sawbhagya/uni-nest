@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './AddProperties.css';
+import Navbar from '../NavBar/NavBar';
 
 const AddPropertyPage = () => {
   const [formData, setFormData] = useState({
@@ -27,6 +28,7 @@ const AddPropertyPage = () => {
   };
 
   return (
+    <div> <Navbar />
     <div className="add-property-container">
       <h1 className="add-property-title">Add New Property</h1>
       <form className="add-property-form" onSubmit={handleSubmit}>
@@ -129,6 +131,7 @@ const AddPropertyPage = () => {
 
         <button type="submit" className="add-property-btn">Add Property</button>
       </form>
+    </div>
     </div>
   );
 };
