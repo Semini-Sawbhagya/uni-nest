@@ -1,0 +1,134 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8fafc;
+    color: #4b5563;
+    line-height: 1.6;
+  }
+  
+  /* About Us Section */
+  .about-us-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+  }
+  
+  /* About Us Header */
+  .about-us-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .about-us-header h2 {
+    font-size: 36px;
+    color: #2b3d4f;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  
+  .about-us-header p {
+    font-size: 18px;
+    color: #6b7280;
+    margin-bottom: 30px;
+    line-height: 1.7;
+    padding: 0 20px;
+  }
+  
+  /* About Us Card */
+  .about-us-card {
+    background-color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    padding: 30px;
+    margin-top: 40px;
+    transition: all 0.3s ease;
+  }
+  
+  .about-us-card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  }
+  
+  .about-us-card h3 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2b3d4f;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
+  }
+  
+  .about-us-card ul {
+    list-style-type: disc;
+    padding-left: 24px;
+    color: #6b7280;
+  }
+  
+  .about-us-card ul li {
+    margin-bottom: 15px;
+  }
+  
+  .about-us-card ul li ul {
+    list-style-type: circle;
+    padding-left: 20px;
+  }
+  
+  /* Hover Effects for List Items */
+  .about-us-card ul li:hover {
+    color: #1e40af;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  /* Button Styles */
+  .about-us-button {
+    display: inline-block;
+    background-color: #1e40af;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 30px;
+    transition: all 0.3s ease;
+  }
+  
+  .about-us-button:hover {
+    background-color: #1e3a8a;
+    transform: translateY(-5px);
+  }
+  
+  .about-us-button:focus {
+    outline: none;
+  }
+  
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    .about-us-header h2 {
+      font-size: 28px;
+    }
+  
+    .about-us-header p {
+      font-size: 16px;
+    }
+  
+    .about-us-card {
+      padding: 20px;
+    }
+  
+    .about-us-card h3 {
+      font-size: 22px;
+    }
+  
+    .about-us-card ul {
+      padding-left: 16px;
+    }
+  }
+  

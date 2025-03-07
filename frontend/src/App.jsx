@@ -18,6 +18,7 @@ import Payment from './components/Student/Payment/Payment'
 import Boarding from './components/Student/Boarding/Boarding'
 import MyBoarding from './components/Student/MyBoarding/MyBoarding'
 import ReviewRating from './components/Student/ReviewRating/ReviewRating'
+import AboutUs from './components/Student/AboutUs/AboutUs'
 import ManageStudents from './components/LandLord/ManageStudents/ManageStudents'
 
 
@@ -41,7 +42,10 @@ function App() {
       <Route path="/boarding/:id" element={<ProtectedRoute allowedRoles={['student']}><Boarding/></ProtectedRoute>}/>
       <Route path="/my-boarding/:id" element={<ProtectedRoute allowedRoles={['student']}><MyBoarding/></ProtectedRoute>}/>
       <Route path="/review-rating" element={<ProtectedRoute allowedRoles={['student']}><ReviewRating/></ProtectedRoute>}/>
+      <Route path="/about-us" element={<ProtectedRoute allowedRoles={['student']}><AboutUs/></ProtectedRoute>}/>   
+
       <Route path="/Manage-students" element={<ProtectedRoute allowedRoles={['landlord']}><ManageStudents/></ProtectedRoute>} />
+
     </Routes>
     </AuthProvider>
     </BrowserRouter>

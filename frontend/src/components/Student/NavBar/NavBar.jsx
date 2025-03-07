@@ -73,7 +73,8 @@ const Navbar = () => {
           My Boarding
         </Link>
         <Link to='/review-rating' onClick={() => setMenu("review-rating")} className={menu === "review-rating" ? "active" : ""}>Reviews & Ratings</Link>
-        <a href='#app-download' onClick={() => setMenu("about-us")} className={menu === "about-us" ? "active" : ""}>About Us</a>
+        <Link to='/about-us' onClick={() => setMenu("about-us")} className={menu === "about-us" ? "active" : ""}>About Us</Link>  
+        
         
       </ul>
       
