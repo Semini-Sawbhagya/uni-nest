@@ -58,7 +58,7 @@ function ManageStudents() {
     
     try {
       const token =Cookies.get('accessToken');
-      await axios.delete(`http://localhost:8000/student/${selectedStudent.boarding_id}`, {
+      await axios.delete(`http://localhost:8000/delete-student/${selectedStudent.student_id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -68,6 +68,7 @@ function ManageStudents() {
       setStudents(students.filter(s => s.boarding_id !== selectedStudent.boarding_id));
       setConfirmDelete(false);
       setSelectedStudent(null);
+      fetchStudents();
     } catch (err) {
       setError('Failed to delete student: ' + (err.response?.data?.detail || err.message));
       console.error('Error deleting student:', err);
