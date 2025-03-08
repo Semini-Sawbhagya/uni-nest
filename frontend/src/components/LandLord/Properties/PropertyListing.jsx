@@ -14,6 +14,14 @@ const PropertyListing = () => {
   const [error, setError] = useState(null);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    location: '',
+    price_range: '',
+    type: '',
+    security: '',
+    available_space: ''
+  });
 
   useEffect(() => {
     fetchProperties();
@@ -53,6 +61,7 @@ const PropertyListing = () => {
     }
   };
 
+  // Delete functionality
   const handleDeleteClick = (property) => {
     setSelectedProperty(property);
     setConfirmDelete(true);
@@ -81,6 +90,66 @@ const PropertyListing = () => {
 
   const cancelDelete = () => {
     setConfirmDelete(false);
+    setSelectedProperty(null);
+  };
+
+  // Edit functionality
+  const handleEditClick = (property) => {
+    setSelectedProperty(property);
+    setEditFormData({
+      location: property.location || '',
+      price_range: property.price_range || '',
+      type: property.type || '',
+      security: property.security || '',
+      available_space: property.available_space || ''
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData({
+      ...editFormData,
+      [name]: value
+    });
+  };
+
+  const submitEditForm = async (e) => {
+    e.preventDefault();
+    
+    if (!selectedProperty) return;
+    
+    try {
+      const token = Cookies.get('accessToken');
+      const response = await axios.put(
+        `http://localhost:8000/update-boarding/${selectedProperty.boarding_id}`,
+        editFormData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      // Update property in the state
+      setProperties(properties.map(property => 
+        property.boarding_id === selectedProperty.boarding_id 
+          ? { ...property, ...editFormData } 
+          : property
+      ));
+      
+      // Close modal and reset form
+      setIsEditModalOpen(false);
+      setSelectedProperty(null);
+    } catch (err) {
+      setError('Failed to update property: ' + (err.response?.data?.detail || err.message));
+      console.error('Error updating property:', err);
+    }
+  };
+
+  const cancelEdit = () => {
+    setIsEditModalOpen(false);
     setSelectedProperty(null);
   };
 
@@ -166,7 +235,10 @@ const PropertyListing = () => {
                   )}
                 </div>
                 <div className="property-actions">
-                  <button className="btn btn-edit">
+                  <button 
+                    className="btn btn-edit"
+                    onClick={() => handleEditClick(property)}
+                  >
                     Edit
                   </button>
                   <button 
@@ -207,6 +279,96 @@ const PropertyListing = () => {
                   Yes, Delete
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Property Modal */}
+        {isEditModalOpen && selectedProperty && (
+          <div className="modal-overlay">
+            <div className="modal edit-modal">
+              <h3 className="modal-title">Edit Property</h3>
+              <form onSubmit={submitEditForm}>
+                <div className="form-group">
+                  <label htmlFor="location">Location</label>
+                  <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    value={editFormData.location}
+                    onChange={handleEditInputChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="price_range">Price Range</label>
+                  <input
+                    type="text"
+                    id="price_range"
+                    name="price_range"
+                    value={editFormData.price_range}
+                    onChange={handleEditInputChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="type">Type</label>
+                  <select
+                    id="type"
+                    name="type"
+                    value={editFormData.type}
+                    onChange={handleEditInputChange}
+                    required
+                  >
+                    <option value="">Select Type</option>
+                    <option value="House">House</option>
+                    <option value="Apartment">Apartment</option>
+                    <option value="Room">Room</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="security">Security</label>
+                  <select
+                    id="security"
+                    name="security"
+                    value={editFormData.security}
+                    onChange={handleEditInputChange}
+                    required
+                  >
+                    <option value="">Select Security Level</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="available_space">Available Spaces</label>
+                  <input
+                    type="number"
+                    id="available_space"
+                    name="available_space"
+                    value={editFormData.available_space}
+                    onChange={handleEditInputChange}
+                    min="0"
+                    required
+                  />
+                </div>
+                <div className="modal-actions">
+                  <button 
+                    type="button"
+                    className="btn-cancel"
+                    onClick={cancelEdit}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit"
+                    className="btn-confirm"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}

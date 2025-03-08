@@ -107,6 +107,12 @@ class BoardingBase(BaseModel):
     security: str
     available_space: int
 
+class EditBoardingBase(BaseModel):
+    price_range: str
+    location: str
+    type: str
+    security: str
+    available_space: int
 class StudentBase(BaseModel):
     student_id: str
     boarding_id:str
@@ -512,7 +518,7 @@ async def get_student_details(user_id:str,db:db_dependancy,current_user: dict = 
         raise HTTPException(status_code=500, detail="Internal Server Error")
     
 @app.delete("/delete-student/{student_id}")
-def delete_student(student_id: str, db: Session = Depends(get_db)):
+def delete_student(student_id: str, db: db_dependancy, current_user: dict = Depends(roles_required(["landlord"]))):
     try:
         query = text("CALL delete_student(:student_id)")
         result = db.execute(query, {"student_id": student_id})
@@ -533,7 +539,7 @@ def delete_student(student_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=f"MySQL Error: {error_message}")
     
 @app.delete("/delete-boarding/{boarding_id}")
-def delete_boarding(boarding_id: str, db: Session = Depends(get_db)):
+def delete_boarding(boarding_id: str, db: db_dependancy, current_user: dict = Depends(roles_required(["landlord"]))):
     try:
         query = text("CALL delete_boarding(:boarding_id)")
         result = db.execute(query, {"boarding_id": boarding_id})
@@ -552,3 +558,20 @@ def delete_boarding(boarding_id: str, db: Session = Depends(get_db)):
         db.rollback()
         error_message = str(e.orig) if hasattr(e, "orig") else str(e)
         raise HTTPException(status_code=400, detail=f"MySQL Error: {error_message}")
+
+@app.put("/update-boarding/{boarding_id}", status_code=status.HTTP_200_OK)
+async def update_boarding(boarding_id: str,boarding: EditBoardingBase,db: Session = Depends(get_db),current_user = Depends(roles_required(["landlord"]))):
+    db_boarding = db.query(Boarding).filter(Boarding.boarding_id == boarding_id).first()
+    if not db_boarding:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Boarding with id {boarding_id} not found"
+        )
+    update_data = boarding.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_boarding, key, value)
+    
+    db.commit()
+    db.refresh(db_boarding)
+    
+    return {"message": "Boarding updated successfully", "boarding": db_boarding}
