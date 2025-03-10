@@ -199,7 +199,6 @@ const AddPropertyPage = () => {
 
           <label htmlFor="price_range">Price Range:</label>
           <select
-            id="price_range"
             name="price_range"
             value={formData.price_range}
             onChange={handleChange}
@@ -207,11 +206,17 @@ const AddPropertyPage = () => {
             className="form-dropdown"
           >
             <option value="">Select a price range</option>
-            {priceRange.map((range) => (
-              <option key={range.id} value={range.id}>
-                {range.range}
-              </option>
-            ))}
+            {priceRange.map((range, index) => {
+              // Handle both string type and object type
+              const typeValue = typeof range === 'string' ? range : (range.id || range);
+              const typeLabel = typeof range === 'string' ? range : (range.name || range);
+              
+              return (
+                <option key={index} value={typeValue}>
+                  {typeLabel}
+                </option>
+              );
+            })}
           </select>
 
           <label htmlFor="location">Location:</label>
@@ -234,11 +239,16 @@ const AddPropertyPage = () => {
             className="form-dropdown"
           >
             <option value="">Select a property type</option>
-            {types.map((type) => (
-              <option key={type.id} value={type.id}>
-                {type.name}
-              </option>
-            ))}
+            {types.map((type, index) => {
+              const typeValue = typeof type === 'string' ? type : (type.id || type);
+              const typeLabel = typeof type === 'string' ? type : (type.name || type);
+              
+              return (
+                <option key={index} value={typeValue}>
+                  {typeLabel}
+                </option>
+              );
+            })}
           </select>
 
           <label htmlFor="security">Security Details:</label>
