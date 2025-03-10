@@ -28,7 +28,7 @@ const header = () => {
       <div className="header-content">
         <h2>Find Your Bording Here</h2>
         <p>Find the perfect boarding place for your university life with ease! Our platform connects students with comfortable, affordable, and convenient accommodations near their campus. Browse listings, compare options, and secure your ideal stay hassle-free. Start your search today!</p>
-        <button>View Menu</button>
+       
       </div>
     </div>
     </div>

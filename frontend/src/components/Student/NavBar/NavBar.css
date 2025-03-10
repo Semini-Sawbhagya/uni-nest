@@ -16,7 +16,11 @@
   height: 50px;
   cursor: pointer;
 }
-
+.hp{
+  font-size: 50px;
+  font-weight: 770;
+  color: #021028e9;
+}
 /* Navbar Menu Styling */
 .navbar-menu {
   display: flex;
