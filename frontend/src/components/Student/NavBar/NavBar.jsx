@@ -60,9 +60,7 @@ const Navbar = () => {
   return (
     <div className='navbar'>
       <Link to='/'><img src={logo} alt="logo" className="logo"/></Link>
-      <p className='hp'>Uni Nest</p>
       <ul className="navbar-menu">
-        
         <Link to='/home' onClick={() => setMenu("home")} className={menu === "home" ? "active" : ""}>Home</Link>
         <Link to='/payment' onClick={() => setMenu("payment")} className={menu === "payment" ? "active" : ""}>Payment</Link>
         
