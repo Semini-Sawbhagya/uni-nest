@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './AddProperties.css';
 import Navbar from '../NavBar/NavBar';
 import axios from 'axios';
+import Cookies from 'js-cookie';
+import {jwtDecode} from 'jwt-decode';
 
 const AddPropertyPage = () => {
   const [universities, setUniversities] = useState([]);
@@ -11,10 +13,11 @@ const AddPropertyPage = () => {
   const [imageFile, setImageFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState('');
+  const [userId, setUserId] = useState('');
   
   const [formData, setFormData] = useState({
     uni_id: '',
-    landlord_id: '',
+    landlord_userid: '',
     img: '',
     price_range: '',
     location: '',
@@ -24,6 +27,19 @@ const AddPropertyPage = () => {
   });
 
   useEffect(() => {
+    const token = Cookies.get('accessToken');
+    if (token) {
+          try {
+            const decoded = jwtDecode(token);
+            setUserId(decoded.user_id);
+            formData.landlord_userid = decoded.user_id;
+          } catch (error) {
+            console.error('Failed to decode token:', error);
+            setError('Authentication error');
+          }
+        } else {
+          setError('No authentication token found');
+    }
     const fetchUniversities = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/universities");
@@ -121,12 +137,12 @@ const AddPropertyPage = () => {
     
     // Here, you would add a backend API call to save the data to your database
     try {
-      await axios.post('http://127.0.0.1:8000/properties/', updatedFormData);
+      await axios.post(`http://127.0.0.1:8000/properties`, updatedFormData);
       alert('Property added successfully!');
       // Reset form
       setFormData({
         uni_id: '',
-        landlord_id: '',
+        landlord_userid: '',
         img: '',
         price_range: '',
         location: '',
@@ -219,7 +235,7 @@ const AddPropertyPage = () => {
             })}
           </select>
 
-          <label htmlFor="location">Location:</label>
+          <label htmlFor="location">Address:</label>
           <input
             type="text"
             id="location"
