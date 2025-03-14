@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Path,HTTPException,Depends,status
+from fastapi import FastAPI,Path,HTTPException,Depends,status,UploadFile,File
 from pydantic import BaseModel
 from typing import Annotated,List
 import models
@@ -13,6 +13,9 @@ from database import engine,get_db,Base
 from fastapi.responses import RedirectResponse
 from fastapi import Response,Request
 from typing import Union
+import cloudinary
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -28,6 +31,29 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
+
+
+# Configuration       
+cloudinary.config( 
+    cloud_name = "dffpr4avv", 
+    api_key = "765295633511258", 
+    api_secret = "xoIqfylbQeKC-yIY9bNsLHs1FNk", 
+    secure=True
+)
+
+@app.post("/upload-image/")
+async def upload_image(file: UploadFile = File(...)):
+    try:
+        result = cloudinary.uploader.upload(file.file)
+        
+        # Return the image URL and other details
+        return {
+            "url": result["secure_url"],
+            "public_id": result["public_id"]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
 @app.get("/")
 async def welcome():
     return {"message": "Hello World"}
@@ -103,6 +129,16 @@ class BoardingBase(BaseModel):
     location: str
     ratings: float
     review: str
+    type: str
+    security: str
+    available_space: int
+
+class AddBoardingBase(BaseModel):
+    uni_id: int
+    img: str
+    price_range: str
+    landlord_id: str
+    location: str
     type: str
     security: str
     available_space: int
@@ -575,3 +611,24 @@ async def update_boarding(boarding_id: str,boarding: EditBoardingBase,db: Sessio
     db.refresh(db_boarding)
     
     return {"message": "Boarding updated successfully", "boarding": db_boarding}
+
+@app.post("/properties/")
+async def add_properties(boarding: AddBoardingBase, db: Session = Depends(get_db)):
+    try:
+        query = text("CALL db_Create_Boarding(:uni_id,:landlord_userId,:img,:price_range,:location,:type,:security, :available_space)")
+        db.execute(query, {
+            "uni_id": boarding.uni_id,
+            "landlord_userId": boarding.landlord_id,
+            "img": boarding.img,
+            "price_range": boarding.price_range,
+            "location": boarding.location,
+            "type": boarding.type,
+            "security": boarding.security,
+            "available_space": boarding.available_space
+        })
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+    return {"message": "Add review and ratings successfully"}
