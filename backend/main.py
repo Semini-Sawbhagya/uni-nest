@@ -148,7 +148,7 @@ class AddBoardingBase(BaseModel):
     uni_id: int
     img: str
     price_range: str
-    landlord_id: str
+    landlord_userId: str
     location: str
     type: str
     security: str
@@ -643,7 +643,7 @@ async def add_properties(boarding: AddBoardingBase, db: Session = Depends(get_db
         query = text("CALL db_Create_Boarding(:uni_id,:landlord_userId,:img,:price_range,:location,:type,:security, :available_space)")
         db.execute(query, {
             "uni_id": boarding.uni_id,
-            "landlord_userId": boarding.landlord_id,
+            "landlord_userId": boarding.landlord_userId,
             "img": boarding.img,
             "price_range": boarding.price_range,
             "location": boarding.location,
