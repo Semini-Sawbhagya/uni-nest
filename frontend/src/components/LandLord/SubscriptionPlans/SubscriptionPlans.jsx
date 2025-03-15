@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./SubscriptionPlans.css";
 import axios from "axios";
 import Cookies from 'js-cookie';
+import Navbar from "../NavBar/NavBar";
 
 const SubscriptionPlans = () => {
   const [plans, setPlans] = useState([]);
@@ -29,6 +30,7 @@ const SubscriptionPlans = () => {
   }, []);
 
   return (
+    <div><Navbar />
     <div className="subscription-container">
       <h1 className="subscription-header">Subscription Plans</h1>
       <p className="subscription-description">
@@ -52,6 +54,7 @@ const SubscriptionPlans = () => {
             </div>
           ))}
       </div>
+    </div>
     </div>
   );
 };

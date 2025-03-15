@@ -8,8 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from "js-cookie";
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
-import { useAuth } from '../../../context/AuthContext'
-
+import { useAuth } from '../../../context/AuthContext';
 
 const Navbar = () => {
   const [menu, setMenu] = useState("home");
