@@ -127,6 +127,12 @@ class StudentDetailsBase(BaseModel):
     user_name:str
 
 
+class RequestData(BaseModel):
+    user_id: str
+    boarding_id: str
+    status: str = "pending"
+
+
 db_dependancy = Annotated[Session,Depends(get_db)]
 
 @app.post("/users/",status_code=status.HTTP_201_CREATED)
@@ -531,3 +537,19 @@ def delete_student(student_id: str, db: Session = Depends(get_db)):
         db.rollback()
         error_message = str(e.orig) if hasattr(e, "orig") else str(e)
         raise HTTPException(status_code=400, detail=f"MySQL Error: {error_message}")
+    
+@app.post("/add-request/")
+def add_request(request_data: RequestData, db: Session = Depends(get_db)):
+    try:
+        query = text("CALL AddRequest(:user_id, :boarding_id, :status)")  # Use user_id here
+        db.execute(query, {
+            "user_id": request_data.user_id,  # Send user_id as parameter
+            "boarding_id": request_data.boarding_id,
+            "status": request_data.status,
+        })
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+    return {"message": "Request added successfully"}
