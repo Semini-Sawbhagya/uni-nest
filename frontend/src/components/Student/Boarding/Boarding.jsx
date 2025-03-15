@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import Navbar from "../NavBar/NavBar";
 import "leaflet/dist/leaflet.css";
 import "./Boarding.css";
 
@@ -56,44 +57,84 @@ const BoardingDetails = () => {
     }
   }, [id]);
 
+  // ✅ Move this function OUTSIDE the useEffect
+  const handleAddRequest = async () => {
+    if (!boarding) {
+      alert("Boarding details not loaded yet. Please wait.");
+      return;
+    }
+
+    const token = Cookies.get("accessToken");
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/add_request",
+        {
+          user_id: Cookies.get("user_id"), // Assuming student_id is stored in cookies
+          boarding_id: boarding.boarding_id,
+          status: "pending"
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("Request added successfully with status: pending");
+    } catch (err) {
+      console.error("Failed to add request:", err);
+      alert("Failed to add request. Please try again.");
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="error">{error}</p>;
   if (!boarding) return <p>No details found.</p>;
 
   return (
-    <div className="boarding-details">
-      <h1>Boarding Details</h1>
-      <img
-        src={`http://127.0.0.1:8000/images/${boarding.img}`}
-        alt="Boarding Place"
-        style={{ width: "300px", height: "200px", objectFit: "cover", borderRadius: "10px" }}
-      />
-      <p><strong>ID:</strong> {boarding.boarding_id}</p>
-      <p><strong>Location:</strong> {boarding.location}</p>
-      <p><strong>Latitude:</strong> {coords.lat}</p>
-      <p><strong>Longitude:</strong> {coords.lng}</p>
-      <p><strong>University ID:</strong> {boarding.uni_id}</p>
-      <p><strong>Landlord ID:</strong> {boarding.landlord_id}</p>
-      <p><strong>Type:</strong> {boarding.type}</p>
-      <p><strong>Price Range:</strong> {boarding.price_range}</p>
-      <p><strong>Ratings:</strong> {boarding.ratings}</p>
-      <p><strong>Review:</strong> {boarding.review}</p>
-      <p><strong>Security:</strong> {boarding.security}</p>
-      <p><strong>Available Space:</strong> {boarding.available_space}</p>
-      <div>
-        <MapContainer
-          center={coords}
-          zoom={15}
-          style={{ width: '100%', height: '400px', borderRadius: '10px' }}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
-          <Marker position={coords}>
-            <Popup>{boarding.location}</Popup>
-          </Marker>
-        </MapContainer>
+    <div>
+      <Navbar />
+      <div className="boarding-details">
+        <h1>Boarding Details</h1>
+        <img
+          src={`http://127.0.0.1:8000/images/${boarding.img}`}
+          alt="Boarding Place"
+          style={{ width: "300px", height: "200px", objectFit: "cover", borderRadius: "10px" }}
+        />
+        <p><strong>ID:</strong> {boarding.boarding_id}</p>
+        <p><strong>Location:</strong> {boarding.location}</p>
+        <p><strong>Latitude:</strong> {coords.lat}</p>
+        <p><strong>Longitude:</strong> {coords.lng}</p>
+        <p><strong>University ID:</strong> {boarding.uni_id}</p>
+        <p><strong>Landlord ID:</strong> {boarding.landlord_id}</p>
+        <p><strong>Type:</strong> {boarding.type}</p>
+        <p><strong>Price Range:</strong> {boarding.price_range}</p>
+        <p><strong>Ratings:</strong> {boarding.ratings}</p>
+        <p><strong>Review:</strong> {boarding.review}</p>
+        <p><strong>Security:</strong> {boarding.security}</p>
+        <p><strong>Available Space:</strong> {boarding.available_space}</p>
+
+        <div>
+          <MapContainer
+            center={coords}
+            zoom={15}
+            style={{ width: '100%', height: '400px', borderRadius: '10px' }}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            <Marker position={coords}>
+              <Popup>{boarding.location}</Popup>
+            </Marker>
+          </MapContainer>
+        </div>
+
+        {/* ✅ Correctly trigger the request on button click */}
+        <button className='AddButton' onClick={handleAddRequest}>
+          Add
+        </button>
       </div>
     </div>
   );

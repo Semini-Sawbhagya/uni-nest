@@ -108,6 +108,14 @@ class Student(Base):
 class StudentReview(Base):
     __tablename__ = "ratings"
 
-    student_id =  student_id = Column(String(36), primary_key=True, default=generate_uuid)
+    student_id  = Column(String(36), primary_key=True, default=generate_uuid)
     ratings = Column(DECIMAL(3,2))
     review = Column(String(255), nullable=False)
+
+class RequestData(Base):
+    __tablename__ = 'pending_requests'
+
+    id = Column(String(36), primary_key=True)  # Add this primary key
+    user_id = Column(String(36), nullable=False)
+    boarding_id = Column(String(36), nullable=False)
+    status = Column(Enum('approved', 'pending', 'rejected'), nullable=False)

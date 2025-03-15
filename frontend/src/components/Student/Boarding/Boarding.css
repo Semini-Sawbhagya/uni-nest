@@ -36,6 +36,33 @@
   .boarding-details strong {
     color: rgb(28, 10, 80);
   }
+  .AddButton {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.AddButton:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.AddButton:active {
+    background-color: #3e8e41;
+    transform: scale(0.98);
+}
+
   
   .error {
     color: #851511;
