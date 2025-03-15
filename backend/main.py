@@ -133,6 +133,17 @@ class BoardingBase(BaseModel):
     security: str
     available_space: int
 
+class BoardingBase1(BaseModel):
+    boarding_id: str
+    uni_id: int
+    landlord_id: str
+    img: str
+    price_range: str
+    location: str
+    type: str
+    security: str
+    available_space: int
+
 class AddBoardingBase(BaseModel):
     uni_id: int
     img: str
@@ -419,7 +430,7 @@ async def multi_role_route(current_user: dict = Depends(roles_required(["student
 def student_home(current_user: dict = Depends(roles_required(["admin","student"]))):
     return {"message": f"Welcome, {current_user['user_name']}!", "role": "student"}
 
-@app.get("/landlord_properties/{user_id}",response_model=List[BoardingBase],status_code=status.HTTP_200_OK)
+@app.get("/landlord_properties/{user_id}",response_model=List[BoardingBase1],status_code=status.HTTP_200_OK)
 async def get_boarding_by_user_ID(user_id: str,db:db_dependancy, current_user: dict = Depends(roles_required(["landlord"]))):
     try:
         if not user_id:
@@ -430,15 +441,13 @@ async def get_boarding_by_user_ID(user_id: str,db:db_dependancy, current_user: d
                 raise HTTPException(status_code=404, detail="No boardings found for this User")
         
         boardings = [
-            BoardingBase(
+            BoardingBase1(
                 boarding_id=row.boarding_id,
                 uni_id=row.uni_id,
                 landlord_id=row.landlord_id,
                 img=row.img,
                 price_range=row.price_range,
                 location=row.location,
-                ratings=row.ratings,
-                review=row.review,
                 type=row.type,
                 security=row.security,
                 available_space=row.available_space
