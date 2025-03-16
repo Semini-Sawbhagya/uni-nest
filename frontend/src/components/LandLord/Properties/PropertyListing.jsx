@@ -228,10 +228,10 @@ const PropertyListing = () => {
                   <p><span className="label">Security:</span> {property.security}</p>
                   <div>
                     <span className="label">Rating:</span>
-                    <span>{property.ratings}⭐</span>
+                    <span>{property.ratings}⭐</span> 
                   </div>
                   {property.review && (
-                    <p className="property-review">"{property.review}"</p>
+                    <p className="property-review">"{property.review}"</p>  // Review is not in the database
                   )}
                 </div>
                 <div className="property-actions">

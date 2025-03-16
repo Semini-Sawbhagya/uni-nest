@@ -17,7 +17,7 @@ const AddPropertyPage = () => {
   
   const [formData, setFormData] = useState({
     uni_id: '',
-    landlord_userid: '',
+    landlord_userId: '',
     img: '',
     price_range: '',
     location: '',
@@ -32,7 +32,7 @@ const AddPropertyPage = () => {
           try {
             const decoded = jwtDecode(token);
             setUserId(decoded.user_id);
-            formData.landlord_userid = decoded.user_id;
+            formData.landlord_userId = decoded.user_id;
           } catch (error) {
             console.error('Failed to decode token:', error);
             setError('Authentication error');
@@ -135,14 +135,12 @@ const AddPropertyPage = () => {
     
     console.log('Property added:', updatedFormData);
     
-    // Here, you would add a backend API call to save the data to your database
     try {
       await axios.post(`http://127.0.0.1:8000/properties`, updatedFormData);
       alert('Property added successfully!');
-      // Reset form
       setFormData({
         uni_id: '',
-        landlord_userid: '',
+        landlord_userId: '',
         img: '',
         price_range: '',
         location: '',
@@ -180,7 +178,7 @@ const AddPropertyPage = () => {
           >
             <option value="">Select a university</option>
             {universities.map((uni) => (
-              <option key={uni.id} value={uni.id}>
+              <option key={uni.uni_id} value={uni.uni_id}>
                 {uni.name}
               </option>
             ))}
