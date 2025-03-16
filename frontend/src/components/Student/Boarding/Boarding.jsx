@@ -4,15 +4,33 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import Navbar from "../NavBar/NavBar";
+import {jwtDecode} from "jwt-decode";
 import "leaflet/dist/leaflet.css";
 import "./Boarding.css";
 
 const BoardingDetails = () => {
   const { id } = useParams();
+  const [userId, setUserId] = useState('');
   const [boarding, setBoarding] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [coords, setCoords] = useState({ lat: 6.9271, lng: 79.8612 }); // Default coordinates (Colombo)
+  const [requestStatus, setRequestStatus] = useState('');
+
+  useEffect(() => {
+    const token = Cookies.get("accessToken");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        console.log("Decoded token:", decoded);
+        setUserId(decoded.user_id);
+      } catch (error) {
+        console.error('Failed to decode token:', error);
+      }
+    } else {
+      console.log('Token not found in cookies.');
+    }
+  }, []);
 
   useEffect(() => {
     const token = Cookies.get("accessToken");
@@ -57,36 +75,53 @@ const BoardingDetails = () => {
     }
   }, [id]);
 
-  // ✅ Move this function OUTSIDE the useEffect
   const handleAddRequest = async () => {
-    if (!boarding) {
-      alert("Boarding details not loaded yet. Please wait.");
-      return;
+    const token = Cookies.get("accessToken");  // 🔥 Add this line to retrieve the token
+    if (!token) {
+        alert("Authentication token not found. Please log in again.");
+        return;
     }
 
-    const token = Cookies.get("accessToken");
+    if (!userId) {
+        alert("User ID not found. Please log in again.");
+        return;
+    }
+
+    if (!boarding) {
+        alert("Boarding details not loaded yet. Please wait.");
+        return;
+    }
+
+    console.log("Payload:", {
+        user_id: userId,
+        boarding_id: boarding.boarding_id,
+        status: "pending"
+    });
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/add_request",
-        {
-          user_id: Cookies.get("user_id"), // Assuming student_id is stored in cookies
-          boarding_id: boarding.boarding_id,
-          status: "pending"
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+        const response = await axios.post(
+            "http://127.0.0.1:8000/add-request/",
+            {
+                user_id: userId,
+                boarding_id: boarding.boarding_id,
+                status: "pending"
+            },
+            {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+            }
+        );
 
-      alert("Request added successfully with status: pending");
+        setRequestStatus("Pending");
+        alert("Request added successfully with status: pending");
     } catch (err) {
-      console.error("Failed to add request:", err);
-      alert("Failed to add request. Please try again.");
+        console.error("Failed to add request:", err);
+        alert("Failed to add request. Please try again.");
     }
-  };
+};
+
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="error">{error}</p>;
@@ -131,9 +166,13 @@ const BoardingDetails = () => {
           </MapContainer>
         </div>
 
-        {/* ✅ Correctly trigger the request on button click */}
-        <button className='AddButton' onClick={handleAddRequest}>
-          Add
+        {/* Add Button to trigger request */}
+        <button
+          className='AddButton'
+          onClick={handleAddRequest}
+          disabled={requestStatus === 'Pending'}
+        >
+          {requestStatus === 'Pending' ? 'Pending' : 'Add Request'}
         </button>
       </div>
     </div>
