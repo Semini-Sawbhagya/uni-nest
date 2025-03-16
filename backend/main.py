@@ -130,7 +130,7 @@ class StudentDetailsBase(BaseModel):
 class RequestData(BaseModel):
     user_id: str
     boarding_id: str
-    status: str = "pending"
+    status: str 
 
 
 db_dependancy = Annotated[Session,Depends(get_db)]
@@ -540,16 +540,19 @@ def delete_student(student_id: str, db: Session = Depends(get_db)):
     
 @app.post("/add-request/")
 def add_request(request_data: RequestData, db: Session = Depends(get_db)):
+    print("Received Data:", request_data.dict())  # Debugging step
+
     try:
-        query = text("CALL AddRequest(:user_id, :boarding_id, :status)")  # Use user_id here
+        query = text("CALL AddRequest(:user_id, :boarding_id, :status)")
         db.execute(query, {
-            "user_id": request_data.user_id,  # Send user_id as parameter
+            "user_id": request_data.user_id,
             "boarding_id": request_data.boarding_id,
             "status": request_data.status,
         })
         db.commit()
     except Exception as e:
         db.rollback()
+        print("Error Details:", str(e))  # Debugging step
         raise HTTPException(status_code=400, detail=str(e))
 
     return {"message": "Request added successfully"}
