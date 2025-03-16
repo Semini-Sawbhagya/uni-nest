@@ -95,6 +95,10 @@ class StudentReview(BaseModel):
     ratings: float
     review: str
 
+class RequestData(BaseModel):
+    user_id: str
+    boarding_id: str
+    status: str 
 
 class NotificationBase(BaseModel):
     notification_id: str
@@ -132,8 +136,6 @@ class BoardingBase(BaseModel):
     type: str
     security: str
     available_space: int
-
-
 
 class BoardingBase1(BaseModel):
     boarding_id: str
@@ -180,12 +182,6 @@ class StudentDetailsBase(BaseModel):
     profile_pic:str
     user_id: str
     user_name:str
-
-
-class RequestData(BaseModel):
-    user_id: str
-    boarding_id: str
-    status: str 
 
 
 db_dependancy = Annotated[Session,Depends(get_db)]
@@ -591,28 +587,6 @@ def delete_student(student_id: str, db: db_dependancy, current_user: dict = Depe
         error_message = str(e.orig) if hasattr(e, "orig") else str(e)
         raise HTTPException(status_code=400, detail=f"MySQL Error: {error_message}")
     
-
-@app.post("/add-request/")
-def add_request(request_data: RequestData, db: Session = Depends(get_db)):
-    
-
-    try:
-        query = text("CALL AddRequest(:user_id, :boarding_id, :status)")
-        db.execute(query, {
-
-            "user_id": request_data.user_id,
-            "boarding_id": request_data.boarding_id,
-            "status": request_data.status,
-
-        })
-        db.commit()
-    except Exception as e:
-        db.rollback()
-        print("Error Details:", str(e))  # Debugging step
-        raise HTTPException(status_code=400, detail=str(e))
-
-    return {"message": "Request added successfully"}
-
 @app.delete("/delete-boarding/{boarding_id}")
 def delete_boarding(boarding_id: str, db: db_dependancy, current_user: dict = Depends(roles_required(["landlord"]))):
     try:
@@ -657,23 +631,36 @@ async def add_properties(boarding: AddBoardingBase, db: Session = Depends(get_db
         query = text("CALL db_Create_Boarding(:uni_id,:landlord_userId,:img,:price_range,:location,:type,:security, :available_space)")
         db.execute(query, {
             "uni_id": boarding.uni_id,
-            "landlord_userId": boarding.landlord_id,
+            "landlord_userId": boarding.landlord_userId,
             "img": boarding.img,
             "price_range": boarding.price_range,
             "location": boarding.location,
             "type": boarding.type,
             "security": boarding.security,
             "available_space": boarding.available_space
-
         })
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+
+    return {"message": "Add review and ratings successfully"}
+
+
+@app.post("/add-request/")
+def add_request(request_data: RequestData, db: Session = Depends(get_db)):
+    try:
+        query = text("CALL AddRequest(:user_id, :boarding_id, :status)")
+        db.execute(query, {
+
+            "user_id": request_data.user_id,
+            "boarding_id": request_data.boarding_id,
+            "status": request_data.status,
+             })
         db.commit()
     except Exception as e:
         db.rollback()
         print("Error Details:", str(e))  # Debugging step
         raise HTTPException(status_code=400, detail=str(e))
 
-
     return {"message": "Request added successfully"}
-
-    return {"message": "Add review and ratings successfully"}
-
