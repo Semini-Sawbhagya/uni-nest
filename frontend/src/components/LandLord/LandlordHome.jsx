@@ -16,6 +16,8 @@ const LandlordHome = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [totalStudents, setTotalStudents] = useState(0);
+  const [activeListings, setActiveListings] = useState(0);
 
   useEffect(() => {
     const token = Cookies.get('accessToken');
@@ -32,12 +34,27 @@ const LandlordHome = () => {
           }
         })
           .then((response) => {
-            setProperties(response.data);
+            const propertiesData = response.data;
+            setProperties(propertiesData);
+            
+            const active = propertiesData.filter(property => 
+              parseInt(property.available_space || 0) != 0
+            ).length;
+            setActiveListings(active);
+            
+            return axios.get(`http://localhost:8000/student-details/${decoded.user_id}`, {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            });
+          })
+          .then((studentResponse) => {
+            setTotalStudents(studentResponse.data.length);
             setLoading(false);
           })
           .catch((error) => {
-            console.error('Error fetching properties:', error);
-            setError('Failed to load properties');
+            console.error('Error fetching data:', error);
+            setError('Failed to load data');
             setLoading(false);
           });
       } catch (error) {
@@ -62,9 +79,9 @@ const LandlordHome = () => {
   };
 
   return (
+    <div><Navbar/>
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <Navbar/>
         <h1>Welcome back, {userName}!</h1>
         <p>Manage your properties and students from one place.</p>
         <Landlordheader/>
@@ -77,7 +94,7 @@ const LandlordHome = () => {
         </div>
         <div className="stat-card">
           <h2>Total Students</h2>
-          <p>15</p>
+          <p>{totalStudents}</p>
         </div>
         <div className="stat-card">
           <h2>Available Spaces</h2>
@@ -85,7 +102,7 @@ const LandlordHome = () => {
         </div>
         <div className="stat-card">
           <h2>Active Listings</h2>
-          <p>3</p>
+          <p>{activeListings}</p>
         </div>
       </div>
 
@@ -132,6 +149,7 @@ const LandlordHome = () => {
         </div>
       </div>
       <Footer/>
+    </div>
     </div>
   );
 };

@@ -47,7 +47,8 @@ const Navbar = () => {
       <Link to='/'><img src={logo} alt="logo" className="logo"/></Link>
       <ul className="navbar-menu">
         <Link to='/landlord-home' onClick={() => setMenu("home")} className={menu === "home" ? "active" : ""}>Home</Link>
-        <Link to='/payment' onClick={() => setMenu("payment")} className={menu === "payment" ? "active" : ""}>Manage Students</Link>
+        <Link to='/add-properties' onClick={() => setMenu("add-properties")} className={menu === "add-properties" ? "active" : ""}>Add Properties</Link>
+        <Link to='/Manage-students' onClick={() => setMenu("Manage-students")} className={menu === "Manage-students" ? "active" : ""}>Manage Students</Link>
         
         {/* Pass the dynamic boardingId in the URL */}
         <Link 

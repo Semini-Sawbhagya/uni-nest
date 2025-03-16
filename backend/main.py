@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Path,HTTPException,Depends,status
+from fastapi import FastAPI,Path,HTTPException,Depends,status,UploadFile,File
 from pydantic import BaseModel
 from typing import Annotated,List
 import models
@@ -13,6 +13,9 @@ from database import engine,get_db,Base
 from fastapi.responses import RedirectResponse
 from fastapi import Response,Request
 from typing import Union
+import cloudinary
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -28,6 +31,29 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
+
+
+# Configuration       
+cloudinary.config( 
+    cloud_name = "dffpr4avv", 
+    api_key = "765295633511258", 
+    api_secret = "xoIqfylbQeKC-yIY9bNsLHs1FNk", 
+    secure=True
+)
+
+@app.post("/upload-image/")
+async def upload_image(file: UploadFile = File(...)):
+    try:
+        result = cloudinary.uploader.upload(file.file)
+        
+        # Return the image URL and other details
+        return {
+            "url": result["secure_url"],
+            "public_id": result["public_id"]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
 @app.get("/")
 async def welcome():
     return {"message": "Hello World"}
@@ -107,6 +133,22 @@ class BoardingBase(BaseModel):
     security: str
     available_space: int
 
+class AddBoardingBase(BaseModel):
+    uni_id: int
+    img: str
+    price_range: str
+    landlord_id: str
+    location: str
+    type: str
+    security: str
+    available_space: int
+
+class EditBoardingBase(BaseModel):
+    price_range: str
+    location: str
+    type: str
+    security: str
+    available_space: int
 class StudentBase(BaseModel):
     student_id: str
     boarding_id:str
@@ -518,7 +560,7 @@ async def get_student_details(user_id:str,db:db_dependancy,current_user: dict = 
         raise HTTPException(status_code=500, detail="Internal Server Error")
     
 @app.delete("/delete-student/{student_id}")
-def delete_student(student_id: str, db: Session = Depends(get_db)):
+def delete_student(student_id: str, db: db_dependancy, current_user: dict = Depends(roles_required(["landlord"]))):
     try:
         query = text("CALL delete_student(:student_id)")
         result = db.execute(query, {"student_id": student_id})
@@ -538,6 +580,7 @@ def delete_student(student_id: str, db: Session = Depends(get_db)):
         error_message = str(e.orig) if hasattr(e, "orig") else str(e)
         raise HTTPException(status_code=400, detail=f"MySQL Error: {error_message}")
     
+
 @app.post("/add-request/")
 def add_request(request_data: RequestData, db: Session = Depends(get_db)):
     print("Received Data:", request_data.dict())  # Debugging step
@@ -548,6 +591,59 @@ def add_request(request_data: RequestData, db: Session = Depends(get_db)):
             "user_id": request_data.user_id,
             "boarding_id": request_data.boarding_id,
             "status": request_data.status,
+
+@app.delete("/delete-boarding/{boarding_id}")
+def delete_boarding(boarding_id: str, db: db_dependancy, current_user: dict = Depends(roles_required(["landlord"]))):
+    try:
+        query = text("CALL delete_boarding(:boarding_id)")
+        result = db.execute(query, {"boarding_id": boarding_id})
+
+        # Fetch the message returned by the stored procedure
+        message = result.fetchall()  # Get all rows returned by the procedure
+
+        db.commit()
+
+        if message:
+            return {"message": message[0][0]}  # Return the first row and first column (your message)
+
+        raise HTTPException(status_code=404, detail=f"No boarding found with ID {boarding_id}")
+
+    except Exception as e:
+        db.rollback()
+        error_message = str(e.orig) if hasattr(e, "orig") else str(e)
+        raise HTTPException(status_code=400, detail=f"MySQL Error: {error_message}")
+
+@app.put("/update-boarding/{boarding_id}", status_code=status.HTTP_200_OK)
+async def update_boarding(boarding_id: str,boarding: EditBoardingBase,db: Session = Depends(get_db),current_user = Depends(roles_required(["landlord"]))):
+    db_boarding = db.query(Boarding).filter(Boarding.boarding_id == boarding_id).first()
+    if not db_boarding:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Boarding with id {boarding_id} not found"
+        )
+    update_data = boarding.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_boarding, key, value)
+    
+    db.commit()
+    db.refresh(db_boarding)
+    
+    return {"message": "Boarding updated successfully", "boarding": db_boarding}
+
+@app.post("/properties/")
+async def add_properties(boarding: AddBoardingBase, db: Session = Depends(get_db)):
+    try:
+        query = text("CALL db_Create_Boarding(:uni_id,:landlord_userId,:img,:price_range,:location,:type,:security, :available_space)")
+        db.execute(query, {
+            "uni_id": boarding.uni_id,
+            "landlord_userId": boarding.landlord_id,
+            "img": boarding.img,
+            "price_range": boarding.price_range,
+            "location": boarding.location,
+            "type": boarding.type,
+            "security": boarding.security,
+            "available_space": boarding.available_space
+
         })
         db.commit()
     except Exception as e:
@@ -555,4 +651,8 @@ def add_request(request_data: RequestData, db: Session = Depends(get_db)):
         print("Error Details:", str(e))  # Debugging step
         raise HTTPException(status_code=400, detail=str(e))
 
+
     return {"message": "Request added successfully"}
+
+    return {"message": "Add review and ratings successfully"}
+
