@@ -100,32 +100,34 @@ function ManageStudents() {
           <table className="students-table">
             <thead>
               <tr>
+              <th>Profile Picture</th>
                 <th>Boarding ID</th>
                 <th>Name</th>
                 <th>Account Number</th>
                 <th>Contact</th>
                 <th>Address</th>
-                <th>Profile Picture</th>
+                
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {students.map((student) => (
                 <tr key={student.boarding_id}>
-                  <td>{student.boarding_id}</td>
-                  <td>{student.user_name}</td>
-                  <td>{student.account_no}</td>
-                  <td>{student.contact}</td>
-                  <td>{student.address}</td>
                   <td>
                     {student.profile_pic && (
                       <img 
-                        src={''} 
+                        src={student.profile_pic} 
                         alt="../assets/ns.png" 
                         className="profile-thumbnail" 
                       />
                     )}
                   </td>
+                  <td>{student.boarding_id}</td>
+                  <td>{student.user_name}</td>
+                  <td>{student.account_no}</td>
+                  <td>{student.contact}</td>
+                  <td>{student.address}</td>
+                  
                   <td>
                     <button 
                       className="delete-btn"
