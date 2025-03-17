@@ -664,3 +664,29 @@ def add_request(request_data: RequestData, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
 
     return {"message": "Request added successfully"}
+
+
+@app.get("/get-status/{user_id}/{boarding_id}")
+async def get_status(user_id: str, boarding_id: str, db: Session = Depends(get_db)):
+    try:
+        # Call the stored procedure
+        db.execute(text("CALL get_status(:user_id, :boarding_id, @status)"), {
+            "user_id": user_id,
+            "boarding_id": boarding_id,
+        })
+
+        # Fetch the output parameter value
+        status_result = db.execute(text("SELECT @status")).fetchone()
+
+        if status_result is None or status_result[0] is None:
+            return {"status": "No status available for this boarding"}
+
+        return {"status": status_result[0]}
+
+    except Exception as e:
+        db.rollback()
+        print("Error Details:", str(e))  # Debugging step
+        raise HTTPException(status_code=400, detail=str(e))
+
+    finally:
+        db.close()
