@@ -107,8 +107,9 @@ class Student(Base):
 
 class StudentReview(Base):
     __tablename__ = "ratings"
-
-    student_id  = Column(String(36), primary_key=True, default=generate_uuid)
+    review_id = Column(String(36), primary_key=True, default=generate_uuid)
+    boarding_id = Column(String(36), ForeignKey("boarding.boarding_id"))
+    student_id  = Column(String(36),  ForeignKey("student.student_id"))
     ratings = Column(DECIMAL(3,2))
     review = Column(String(255), nullable=False)
 
