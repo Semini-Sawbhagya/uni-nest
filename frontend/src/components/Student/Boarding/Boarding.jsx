@@ -4,7 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import Navbar from "../NavBar/NavBar";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import "leaflet/dist/leaflet.css";
 import "./Boarding.css";
 
@@ -30,21 +30,21 @@ const BoardingDetails = () => {
     } else {
       console.log('Token not found in cookies.');
     }
+    
   }, []);
 
   useEffect(() => {
     const token = Cookies.get("accessToken");
-
+  
+    // Function to fetch boarding details
     const fetchBoardingDetails = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/boarding_details/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` }
         });
         setBoarding(response.data);
         setLoading(false);
-
+  
         if (response.data.location) {
           fetchCoordinates(response.data.location);
         }
@@ -53,7 +53,8 @@ const BoardingDetails = () => {
         setLoading(false);
       }
     };
-
+  
+    // Function to fetch coordinates using location
     const fetchCoordinates = async (location) => {
       try {
         const geoResponse = await axios.get(
@@ -62,66 +63,103 @@ const BoardingDetails = () => {
         if (geoResponse.data.length > 0) {
           setCoords({
             lat: parseFloat(geoResponse.data[0].lat),
-            lng: parseFloat(geoResponse.data[0].lon),
+            lng: parseFloat(geoResponse.data[0].lon)
           });
         }
       } catch (err) {
         console.error("Failed to fetch coordinates:", err);
       }
     };
-
+  
     if (id) {
       fetchBoardingDetails();
     }
-  }, [id]);
-
-  const handleAddRequest = async () => {
-    const token = Cookies.get("accessToken");  // 🔥 Add this line to retrieve the token
-    if (!token) {
-        alert("Authentication token not found. Please log in again.");
+  }, [id]);  // Only depends on `id`, since it's needed to fetch boarding details.
+  
+  useEffect(() => {
+    const token = Cookies.get("accessToken");
+  
+    // Function to fetch request status
+    const fetchRequestStatus = async (boardingId) => {
+      console.log("User ID:", userId); // Check if userId is valid
+      console.log("Boarding ID:", boardingId); // Check if boardingId is valid
+      if (!userId) {
+        alert("User ID not found. Please log in again.");
         return;
+      }
+      try {
+        const statusResponse = await axios.get(`http://127.0.0.1:8000/get-status/${userId}/${boardingId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setRequestStatus(statusResponse.data.status);
+  
+       console.log("Status Response:", statusResponse.data);
+       console.log("Request Status:", statusResponse.data.status);
+       requestStatus(statusResponse.data.status);
+      } catch (err) {
+        console.log("Already added the request:");
+      
+         // Default to empty if no status is found
+      }
+    };
+  
+    if (boarding && userId) {
+      fetchRequestStatus(boarding.boarding_id);
+    }
+  }, [boarding, userId]); // Depends on `boarding` and `userId` to fetch the status
+  
+  const handleAddRequest = async () => {
+    const token = Cookies.get("accessToken");
+    if (!token) {
+      alert("Authentication token not found. Please log in again.");
+      return;
     }
 
     if (!userId) {
-        alert("User ID not found. Please log in again.");
-        return;
+      alert("User ID not found. Please log in again.");
+      return;
     }
 
     if (!boarding) {
-        alert("Boarding details not loaded yet. Please wait.");
-        return;
+      alert("Boarding details not loaded yet. Please wait.");
+      return;
     }
+    
 
     console.log("Payload:", {
-        user_id: userId,
-        boarding_id: boarding.boarding_id,
-        status: "pending"
+      user_id: userId,
+      boarding_id: boarding.boarding_id,
+      status: requestStatus
     });
 
     try {
-        const response = await axios.post(
-            "http://127.0.0.1:8000/add-request/",
-            {
-                user_id: userId,
-                boarding_id: boarding.boarding_id,
-                status: "pending"
-            },
-            {
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-            }
-        );
+      await axios.post(
+        "http://127.0.0.1:8000/add-request/",
+        {
+          user_id: userId,
+          boarding_id: boarding.boarding_id,
+          status: "pending"
+        },
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+        }
+      );
 
-        setRequestStatus("Pending");
-        alert("Request added successfully with status: pending");
+      setRequestStatus("pending"); 
+      console.log("Payload:", {
+        user_id: userId,
+        boarding_id: boarding.boarding_id,
+        status: requestStatus
+      }); 
+      alert("Request added successfully with status: pending");
     } catch (err) {
-        console.error("Failed to add request:", err);
-        alert("Failed to add request. Please try again.");
+      console.error("Already added the request:");
+      alert("Already added the request:");
     }
-};
-
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="error">{error}</p>;
@@ -166,17 +204,21 @@ const BoardingDetails = () => {
           </MapContainer>
         </div>
 
-        {/* Add Button to trigger request */}
+        {/* Dynamic Button for Add Request */}
         <button
           className='AddButton'
           onClick={handleAddRequest}
-          disabled={requestStatus === 'Pending'}
+          disabled={requestStatus === 'pending'}
         >
-          {requestStatus === 'Pending' ? 'Pending' : 'Add Request'}
+          
+        {requestStatus === 'pending' ? 'Pending' : requestStatus === 'approved' ? 'Approved' : requestStatus === 'rejected' ? 'Rejected' : 'Add Request'}
         </button>
+        
+
       </div>
     </div>
   );
 };
 
 export default BoardingDetails;
+
