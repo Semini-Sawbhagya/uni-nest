@@ -3,14 +3,15 @@ import { Star } from "lucide-react";
 import "./ReviewRating.css";
 import Navbar from "../NavBar/NavBar";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode"; // ✅ Correct import
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
 const ReviewRating = () => {
   const [userId, setUserId] = useState('');
   const [studentId, setStudentId] = useState('');
   const [ratings, setRatings] = useState(0);
-  const [review, setReview] = useState("");
+  const [review, setReview] = useState('');
+  const [boardingId, setBoardingId] = useState('');
 
   useEffect(() => {
     const token = Cookies.get('accessToken');
@@ -22,13 +23,19 @@ const ReviewRating = () => {
         console.error('Failed to decode token:', error);
       }
     }
+    console.log("decoded token:", userId);
   }, []);
 
   useEffect(() => {
     if (userId) {
       fetchStudentId(userId);
+      fetchBoardingId(userId);
     }
   }, [userId]);
+
+  useEffect(() => {
+    console.log("Updated boarding ID:", boardingId);  // ✅ Debugging
+  }, [boardingId]);
 
   const fetchStudentId = async (userId) => {
     try {
@@ -39,16 +46,32 @@ const ReviewRating = () => {
     }
   };
 
+  const fetchBoardingId = async (userId) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/get-my-boarding-id/${userId}`);
+      console.log("API Response for Boarding ID:", response.data);  // ✅ Debugging
+      setBoardingId(response.data.my_boarding_id);
+    } catch (error) {
+      console.error("Error fetching boarding ID:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    if (!boardingId) {
+      alert("Boarding ID is not yet loaded. Please try again.");
+      return;
+    }
+
     try {
       const response = await axios.post("http://localhost:8000/student-review/", {
         student_id: studentId,
-        ratings: parseFloat(ratings), // ✅ Ensure DECIMAL(3,2)
+        boarding_id: boardingId,
+        ratings: parseFloat(ratings),
         review: review,
       });
-      console.log("Submitting:", { student_id: studentId, ratings, review });
+      console.log("Submitting:", { student_id: studentId, boarding_id: boardingId, ratings, review });
 
       alert(response.data.message);
       setRatings(0);
@@ -71,8 +94,8 @@ const ReviewRating = () => {
              key={star}
              className={`review-star ${ratings >= star ? "selected" : ""}`}
              onClick={() => setRatings(star)}
-             fill={ratings >= star ? "gold" : "none"} // ✅ Fills the star completely
-             stroke="gold" // ✅ Keeps the border gold
+             fill={ratings >= star ? "gold" : "none"}
+             stroke="gold"
            />
            
             ))}
