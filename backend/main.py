@@ -92,6 +92,7 @@ class StudentPayment(BaseModel):
 
 class StudentReview(BaseModel):
     student_id: str
+    boarding_id:str
     ratings: float
     review: str
 
@@ -527,9 +528,10 @@ def get_student_id(student_user_id: str, db: Session = Depends(get_db)):
 @app.post("/student-review/")
 def add_review(review: StudentReview, db: Session = Depends(get_db)):
     try:
-        query = text("CALL AddReview(:student_id, :ratings, :review)")
+        query = text("CALL AddRating(:student_id,:boarding_id, :ratings, :review)")
         db.execute(query, {
             "student_id": review.student_id,
+            "boarding_id": review.boarding_id,
             "ratings": review.ratings,
             "review": review.review,
         })
