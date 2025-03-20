@@ -13,6 +13,7 @@ const BoardingDetails = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [coords, setCoords] = useState({ lat: 6.9271, lng: 79.8612 }); // Default coordinates (Colombo)
+  const [ratings, setRatings] = useState({});
 
   useEffect(() => {
     const token = Cookies.get("accessToken");
@@ -35,6 +36,21 @@ const BoardingDetails = () => {
         setLoading(false);
       }
     };
+    const fetchAverageRatings = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/get-average-rating/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setRatings(response.data.p_ratings);
+        setLoading(false);
+  
+        
+      } catch (err) {
+        setError("Failed to load ratings.");
+        setLoading(false);
+      }
+    };
+  
 
     const fetchCoordinates = async (location) => {
       try {
@@ -54,6 +70,7 @@ const BoardingDetails = () => {
 
     if (id) {
       fetchBoardingDetails();
+      fetchAverageRatings();
     }
   }, [id]);
 
@@ -79,7 +96,7 @@ const BoardingDetails = () => {
       <p><strong>Landlord ID:</strong> {boarding.landlord_id}</p>
       <p><strong>Type:</strong> {boarding.type}</p>
       <p><strong>Price Range:</strong> {boarding.price_range}</p>
-      <p><strong>Ratings:</strong> {boarding.ratings}</p>
+      <p><strong>Ratings:</strong> {ratings}</p>
       <p><strong>Review:</strong> {boarding.review}</p>
       <p><strong>Security:</strong> {boarding.security}</p>
       <p><strong>Available Space:</strong> {boarding.available_space}</p>
