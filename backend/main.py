@@ -704,3 +704,22 @@ async def get_status(user_id: str, boarding_id: str, db: Session = Depends(get_d
 
     finally:
         db.close()
+
+@app.get("/get-average-rating/{boarding_id}")
+def get_average_rating(boarding_id: str, db: Session = Depends(get_db)):
+    try:
+        # Declare the output parameter before calling the procedure
+        db.execute(text("SET @p_ratings = NULL"))
+
+        # Call the stored procedure with the declared output parameter
+        db.execute(text("CALL get_ratings(:boarding_id, @p_ratings)"), 
+                   {"boarding_id": boarding_id})
+        
+        # Fetch the output parameter value
+        result = db.execute(text("SELECT @p_ratings")).fetchone()
+
+        # Return 0 if no ratings are found (instead of raising an error)
+        return {"p_ratings": float(result[0]) if result and result[0] is not None else 0.0}
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

@@ -3,7 +3,6 @@ import axios from "axios";
 import "./SearchBoardings.css";
 import { Navigate, useNavigate } from "react-router-dom";
 
-
 const SearchBoardings = () => {
   const [uniId, setUniId] = useState("");
   const [priceRanges, setPriceRange] = useState([]);
@@ -15,13 +14,12 @@ const SearchBoardings = () => {
   const [types, setTypes] = useState([]); 
   const [selectedType, setSelectedType] = useState(""); 
   const navigate = useNavigate();
+  const [ratings, setRatings] = useState({});
 
   useEffect(() => {
     const fetchUniversities = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/universities");
-        console.log("Universities state:", universities);
-
         setUniversities(response.data);
       } catch (err) {
         console.error("Error fetching universities:", err);
@@ -29,10 +27,10 @@ const SearchBoardings = () => {
       }
     };
     fetchUniversities();
+
     const fetchTypes = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/types");
-        console.log("Types from API:", response.data);
         setTypes(response.data); 
       } catch (err) {
         console.error("Error fetching types:", err);
@@ -40,10 +38,10 @@ const SearchBoardings = () => {
       }
     };
     fetchTypes();
+
     const fetchPrice_Range = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/price-ranges");
-        console.log("Types from API:", response.data);
         setPriceRange(response.data); 
       } catch (err) {
         console.error("Error fetching price-range:", err);
@@ -51,17 +49,36 @@ const SearchBoardings = () => {
       }
     };
     fetchPrice_Range();
-
   }, []);
+
+  const fetchAverageRatings = async (boardingId) => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/get-average-rating/${boardingId}`);
+      return response.data.p_ratings;
+    } catch (err) {
+      console.error(`Failed to load ratings for ${boardingId}:`, err);
+      return "N/A"; 
+    }
+  };
 
   const fetchBoardings = async (endpoint) => {
     setLoading(true);
     setError("");
     try {
       const response = await axios.get(endpoint);
-      console.log("Response data:", response.data);
       if (response.status === 200) {
-        setBoardings(response.data);
+        const fetchedBoardings = response.data;
+
+        const ratingsData = {};
+        await Promise.all(
+          fetchedBoardings.map(async (boarding) => {
+            const rating = await fetchAverageRatings(boarding.boarding_id);
+            ratingsData[boarding.boarding_id] = rating;
+          })
+        );
+
+        setBoardings(fetchedBoardings);
+        setRatings(ratingsData);
       } else {
         setError("Unexpected response status: " + response.status);
       }
@@ -74,13 +91,13 @@ const SearchBoardings = () => {
   };
 
   const handleSearch = () => {
-    if (!uniId && !selectedType && !selectedPriceRange) {  // Fix: replaced `type` with `selectedType`
+    if (!uniId && !selectedType && !selectedPriceRange) {
       setError("Please select at least one filter.");
       return;
     }
     let url = "http://127.0.0.1:8000/";
-  
-    if (uniId && selectedType && selectedPriceRange) {  // Fix here too
+
+    if (uniId && selectedType && selectedPriceRange) {
       url += `boardings-by-uni-price-type/${uniId}/${selectedPriceRange}/${selectedType}`;
     } else if (uniId && selectedType) {
       url += `boardings-by-uni-type/${uniId}/${selectedType}`;
@@ -95,12 +112,14 @@ const SearchBoardings = () => {
     } else if (selectedPriceRange) {
       url += `boardings-price_range/${selectedPriceRange}`;
     }
-  
+
     fetchBoardings(url);
   };
+
   const handleBoarding = (boardingId) => {
-    navigate(`/boarding/${boardingId}`); // Navigate to the specific boarding's page
+    navigate(`/boarding/${boardingId}`);
   };
+
   return (
     <div className="container">
       <h1 className="heading">Search Boarding Places</h1>
@@ -111,34 +130,24 @@ const SearchBoardings = () => {
             <option value="">Select a University</option>
             {universities.map((university) => (
               <option key={university.uni_id} value={university.uni_id}>
-                {university.name} {/* Corrected from "uni_name" to "name" */}
+                {university.name}
               </option>
             ))}
           </select>
-
-
         </div>
         <div>
-      <label>Type:</label>
-      <select
-        className="select-field"
-        value={selectedType}
-        onChange={(e) => setSelectedType(e.target.value)}
-      >
-        <option value="">Select a Type</option>
-        {types.length > 0 ? (
-          types.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))
-        ) : (
-          <option disabled>Loading types...</option>
-        )}
-      </select>
-
-      {error && <p className="error">{error}</p>}
-    </div>
+          <label>Type:</label>
+          <select
+            className="select-field"
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+          >
+            <option value="">Select a Type</option>
+            {types.map((type) => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
+        </div>
         <div>
           <label>Price Range:</label>
           <select
@@ -147,40 +156,27 @@ const SearchBoardings = () => {
             onChange={(e) => setSelectedPriceRange(e.target.value)}
           >
             <option value="">Select a Price Range</option>
-            {priceRanges.length > 0 ? (
-              priceRanges.map((priceRange) => (
-                <option key={priceRange} value={priceRange}>
-                  {priceRange}
-                </option>
-              ))
-            ) : (
-              <option disabled>Loading price range...</option>
-            )}
-      </select>
-
+            {priceRanges.map((priceRange) => (
+              <option key={priceRange} value={priceRange}>{priceRange}</option>
+            ))}
+          </select>
         </div>
       </div>
-      <button onClick={handleSearch} className="button">
-        Search
-      </button>
+      <button onClick={handleSearch} className="button">Search</button>
       {loading && <p>Loading...</p>}
       {error && <p className="error">{error}</p>}
       <div className="boarding-list">
-        {Array.isArray(boardings) && boardings.length > 0 ? (
-          boardings.map((boarding) => (
-            <button key={boarding.boarding_id} onClick={() => handleBoarding(boarding.boarding_id)}>
-              <div className="boarding-item">
-                <p><strong>ID:</strong> {boarding.boarding_id}</p>
-                <p><strong>Type:</strong> {boarding.type || 'N/A'}</p>
-                <p><strong>Price Range:</strong> {boarding.price_range || 'N/A'}</p>
-                <p><strong>Location:</strong> {boarding.location || 'N/A'}</p>
-                <p><strong>Ratings:</strong> {boarding.ratings || 'N/A'}</p>
-              </div>
-            </button>
-          ))
-        ) : (
-          <p>No boardings found.</p>
-        )}
+        {boardings.map((boarding) => (
+          <button key={boarding.boarding_id} onClick={() => handleBoarding(boarding.boarding_id)}>
+            <div className="boarding-item">
+              <p><strong>ID:</strong> {boarding.boarding_id}</p>
+              <p><strong>Type:</strong> {boarding.type || 'N/A'}</p>
+              <p><strong>Price Range:</strong> {boarding.price_range || 'N/A'}</p>
+              <p><strong>Location:</strong> {boarding.location || 'N/A'}</p>
+              <p><strong>Ratings:</strong> {ratings[boarding.boarding_id] || '0'}</p>
+            </div>
+          </button>
+        ))}
       </div>
     </div>
   );

@@ -26,7 +26,7 @@ const Landlordheader = () => {
       <div className="Landlordheader-content">
         <h2>List Your Bordings Here</h2>
         <p>Unlock the potential of your property by connecting with university students seeking comfortable accommodations! List your boarding space on our platform to reach a wider audience, manage inquiries effortlessly, and find the perfect tenants. Start hosting today and make the most of your rental space!</p>
-        <button>View Menu</button>
+       
       </div>
     </div>
     </div>
