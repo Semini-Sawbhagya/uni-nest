@@ -2,7 +2,7 @@ from fastapi import FastAPI,Path,HTTPException,Depends,status,UploadFile,File
 from pydantic import BaseModel
 from typing import Annotated,List
 import models
-from models import User,Boarding,University,Payment,Notification,Package,Landlord,Student
+from models import User,Boarding,University,Payment,Notification,Package,Landlord,Student,StudentReview
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
 from Security.utils import hash_password, verify_password
@@ -90,7 +90,9 @@ class StudentPayment(BaseModel):
     user_id: str
     amount: Union[int, float] 
 
-class StudentReview(BaseModel):
+class StudentReviewBase(BaseModel):
+    review_id: str
+    boarding_id: str
     student_id: str
     boarding_id:str
     ratings: float
@@ -526,7 +528,7 @@ def get_student_id(student_user_id: str, db: Session = Depends(get_db)):
    
 
 @app.post("/student-review/")
-def add_review(review: StudentReview, db: Session = Depends(get_db)):
+def add_review(review: StudentReviewBase, db: Session = Depends(get_db)):
     try:
         query = text("CALL AddRating(:student_id,:boarding_id, :ratings, :review)")
         db.execute(query, {
@@ -667,6 +669,16 @@ def add_request(request_data: RequestData, db: Session = Depends(get_db)):
 
     return {"message": "Request added successfully"}
 
+@app.get('/boarding_reviews/{boarding_id}',response_model=List[StudentReviewBase],status_code=status.HTTP_200_OK)
+async def get_boarding_reviews( boarding_id: str,db:db_dependancy,current_user: dict = Depends(roles_required(["landlord"]))):
+    try:
+        reviews = db.query(models.StudentReview).filter(models.StudentReview.boarding_id == boarding_id).all()
+        if not reviews:
+            raise HTTPException(status_code=404, detail="Reviews not found")
+        return reviews
+    except Exception as e:
+        print(f"Error fetching reviews: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 @app.get("/get-status/{user_id}/{boarding_id}")
 async def get_status(user_id: str, boarding_id: str, db: Session = Depends(get_db)):
