@@ -46,7 +46,10 @@ function App() {
       <Route path="/Manage-students" element={<ProtectedRoute allowedRoles={['landlord']}><ManageStudents/></ProtectedRoute>} />
       <Route path="/add-request" element={<ProtectedRoute allowedRoles={['student']}><Boarding/></ProtectedRoute>}/>
       <Route path="/get-status" element={<ProtectedRoute allowedRoles={['student']}><Boarding/></ProtectedRoute>}/>
+      <Route path="/get-average-rating/:id" element={<ProtectedRoute allowedRoles={['student']}><Boarding/></ProtectedRoute>}/>
     </Routes>
+    
+
     </AuthProvider>
     </BrowserRouter>
     
