@@ -22,7 +22,7 @@
 /* Stats grid */
 .stats-grid1 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin-bottom: 2rem;
 }
@@ -248,4 +248,65 @@
   text-align: center;
   padding: 1rem;
   color: #e53e3e;
+}
+
+/* Add these styles to your PropertyListing.css file */
+
+.property-reviews {
+  margin-top: 15px;
+  border-top: 1px solid #eaeaea;
+  padding-top: 10px;
+}
+
+.reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px 0;
+}
+
+.reviews-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+.toggle-icon {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.reviews-list {
+  margin-top: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.review-item {
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.review-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.4;
+}
+
+.no-reviews {
+  font-style: italic;
+  color: #888;
+  text-align: center;
+  padding: 10px 0;
 }

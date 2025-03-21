@@ -15,6 +15,9 @@ const PropertyListing = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [propertyReviews, setPropertyReviews] = useState({});
+  const [ratings, setRatings] = useState({});
+  const [expandedReviews, setExpandedReviews] = useState({});
   const [editFormData, setEditFormData] = useState({
     location: '',
     price_range: '',
@@ -42,7 +45,15 @@ const PropertyListing = () => {
           }
         })
           .then((response) => {
-            setProperties(response.data);
+            const propertiesData = response.data;
+            setProperties(propertiesData);
+            
+            // Fetch reviews for each property
+            propertiesData.forEach(property => {
+              fetchReviewsForProperty(property.boarding_id, token);
+              fetchAverageRatings(property.boarding_id, token);
+            });
+            
             setLoading(false);
           })
           .catch((error) => {
@@ -58,6 +69,57 @@ const PropertyListing = () => {
     } else {
       setError('No authentication token found');
       setLoading(false);
+    }
+  };
+
+  const fetchReviewsForProperty = async (boardingId, token) => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/get-reviews/${boardingId}`, {
+        headers: { 
+          Authorization: `Bearer ${token}` 
+        }
+      });
+      
+      if (response.status === 200 && Array.isArray(response.data)) {
+        setPropertyReviews(prev => ({
+          ...prev,
+          [boardingId]: response.data
+        }));
+      }
+    } catch (err) {
+      console.error(`Failed to load reviews for property ${boardingId}:`, err);
+    }
+  };
+
+  // Toggle expanded reviews for a property
+  const toggleReviews = (boardingId) => {
+    setExpandedReviews(prev => ({
+      ...prev,
+      [boardingId]: !prev[boardingId]
+    }));
+  };
+
+  const fetchAverageRatings = async (boardingId, token) => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/get-average-rating/${boardingId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.status === 200) {
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          setRatings(prev => ({
+            ...prev,
+            [boardingId]: response.data[0].p_ratings || 0
+          }));
+        } else {
+          setRatings(prev => ({
+            ...prev,
+            [boardingId]: response.data.p_ratings || 0
+          }));
+        }
+      }
+    } catch (err) {
+      console.error(`Failed to load Ratings for property ${boardingId}:`, err);
     }
   };
 
@@ -191,12 +253,7 @@ const PropertyListing = () => {
             <h2>Available Spaces</h2>
             <p>{totalAvailableSpaces}</p>
           </div>
-          <div className="stat-card1">
-            <h2>Average Rating</h2>
-            <p>
-              {(properties.reduce((sum, p) => sum + parseFloat(p.ratings || 0), 0) / properties.length || 0).toFixed(1)}⭐
-            </p>
-          </div>
+          
         </div>
 
         <input
@@ -227,12 +284,35 @@ const PropertyListing = () => {
                   <p><span className="label">Type:</span> {property.type}</p>
                   <p><span className="label">Security:</span> {property.security}</p>
                   <div>
-                    <span className="label">Rating:</span>
-                    <span>{property.ratings}⭐</span> 
+                  <span className="label">Rating:</span>
+                  <span>{ratings[property.boarding_id] ? `${ratings[property.boarding_id]}⭐` : 'No ratings yet'}</span> 
                   </div>
-                  {property.review && (
-                    <p className="property-review">"{property.review}"</p>  // Review is not in the database
-                  )}
+                  
+                  {/* Reviews Section */}
+                  <div className="property-reviews">
+                    <div className="reviews-header" onClick={() => toggleReviews(property.boarding_id)}>
+                      <h4>Reviews ({propertyReviews[property.boarding_id]?.length || 0})</h4>
+                      <span className="toggle-icon">{expandedReviews[property.boarding_id] ? '▼' : '►'}</span>
+                    </div>
+                    
+                    {expandedReviews[property.boarding_id] && propertyReviews[property.boarding_id] && (
+                      <div className="reviews-list">
+                        {propertyReviews[property.boarding_id].length > 0 ? (
+                          propertyReviews[property.boarding_id].map((review, index) => (
+                            <div key={index} className="review-item">
+                              <div className="review-header">
+                                <strong>{review.user_name}</strong>
+                                <span>{review.review}</span>
+                              </div>
+                              <p className="review-text">{review.review_text}</p>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="no-reviews">No reviews yet for this property.</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="property-actions">
                   <button 
