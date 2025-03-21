@@ -723,3 +723,23 @@ def get_average_rating(boarding_id: str, db: Session = Depends(get_db)):
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@app.get("/get-reviews/{boarding_id}")
+def get_reviews(boarding_id: str, db: Session = Depends(get_db)):
+    try:
+        # Call the stored procedure
+        result = db.execute(text("CALL get_reviews(:boarding_id)"), 
+                            {"boarding_id": boarding_id})
+        
+        # Extract data from the result
+        reviews = [{"user_name": row[0], "review": row[1]} for row in result.fetchall()]
+
+        # Return an empty list if no reviews are found
+        return reviews if reviews else []
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+
+

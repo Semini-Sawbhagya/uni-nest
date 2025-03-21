@@ -17,6 +17,7 @@ const BoardingDetails = () => {
   const [coords, setCoords] = useState({ lat: 6.9271, lng: 79.8612 }); // Default coordinates (Colombo)
   const [requestStatus, setRequestStatus] = useState('');
   const [ratings, setRatings] = useState('');
+  const [review, setReview] = useState('');
 
   useEffect(() => {
     const token = Cookies.get("accessToken");
@@ -68,6 +69,24 @@ const BoardingDetails = () => {
         setLoading(false);
       }
     };
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/get-reviews/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (response.status === 200 && Array.isArray(response.data)) {
+          setReview(response.data);
+        } else {
+          setError("No reviews found.");
+        }
+  
+        
+      } catch (err) {
+        setError("Failed to load reviews.");
+        setLoading(false);
+      }
+    };
+  
   
   
     // Function to fetch coordinates using location
@@ -90,6 +109,7 @@ const BoardingDetails = () => {
     if (id) {
       fetchBoardingDetails();
       fetchAverageRatings();
+      fetchReviews();
     }
   }, [id]);  // Only depends on `id`, since it's needed to fetch boarding details.
   
@@ -194,14 +214,26 @@ const BoardingDetails = () => {
         />
         <p><strong>ID:</strong> {boarding.boarding_id}</p>
         <p><strong>Location:</strong> {boarding.location}</p>
-        <p><strong>Latitude:</strong> {coords.lat}</p>
-        <p><strong>Longitude:</strong> {coords.lng}</p>
         <p><strong>University ID:</strong> {boarding.uni_id}</p>
         <p><strong>Landlord ID:</strong> {boarding.landlord_id}</p>
         <p><strong>Type:</strong> {boarding.type}</p>
         <p><strong>Price Range:</strong> {boarding.price_range}</p>
         <p><strong>Ratings:</strong> {ratings}</p>
-        <p><strong>Review:</strong> {boarding.review}</p>
+        {/* Render Reviews */}
+        <div>
+            <h2 className="heading">Reviews</h2>
+            {review && review.length > 0 ? (
+                review.map((item, index) => (
+                    <div key={index} className="review-item">
+                        <h4>{item.user_name}</h4>
+                        <p>{item.review}</p>
+                    </div>
+                ))
+            ) : (
+                <p>No reviews yet.</p>
+            )}
+        </div>
+
         <p><strong>Security:</strong> {boarding.security}</p>
         <p><strong>Available Space:</strong> {boarding.available_space}</p>
 
