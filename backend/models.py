@@ -83,8 +83,6 @@ class Boarding(Base):
     img = Column(Text)
     price_range = Column(Enum("Rs: 3000-5000", "Rs: 5000-20000", "other"), nullable=False)
     location = Column(String(255), nullable=False)
-    ratings = Column(DECIMAL(3,2))
-    review = Column(Text)
     type = Column(Enum("Room", "house", "apartment"), nullable=False)
     security = Column(Text)
     available_space = Column(Integer, nullable=False)

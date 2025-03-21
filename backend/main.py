@@ -91,8 +91,7 @@ class StudentPayment(BaseModel):
     amount: Union[int, float] 
 
 class StudentReviewBase(BaseModel):
-    review_id: str
-    boarding_id: str
+    id: str
     student_id: str
     boarding_id:str
     ratings: float
@@ -134,8 +133,6 @@ class BoardingBase(BaseModel):
     img: str
     price_range: str
     location: str
-    ratings: float
-    review: str
     type: str
     security: str
     available_space: int
