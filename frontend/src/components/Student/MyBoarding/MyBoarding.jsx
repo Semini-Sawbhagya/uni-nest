@@ -111,7 +111,7 @@ const BoardingDetails = () => {
         <p><strong>University ID:</strong> {boarding.uni_id}</p>
         <p><strong>Landlord ID:</strong> {boarding.landlord_id}</p>
         <p><strong>Type:</strong> {boarding.type}</p>
-        <p><strong>Price Range:</strong> {boarding.price_range}</p>
+        <p><strong>Price:</strong> {boarding.price}</p>
         <p><strong>Ratings:</strong> {ratings ? ratings.averageRating : 'No ratings available'}</p> {/* Assuming 'averageRating' exists */}
         <div>
           <h2 className="heading">Reviews</h2>

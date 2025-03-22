@@ -84,7 +84,7 @@ const SearchBoardings = () => {
       }
     } catch (err) {
       console.error("Error fetching data:", err);
-      setError(err.response?.data?.error || "Error fetching data");
+      setError(err.response?.data?.error || "No boardings for the given criteria");
     } finally {
       setLoading(false);
     }
@@ -92,29 +92,32 @@ const SearchBoardings = () => {
 
   const handleSearch = () => {
     if (!uniId && !selectedType && !selectedPriceRange) {
-      setError("Please select at least one filter.");
-      return;
+        setError("Please select at least one filter.");
+        return;
     }
+
     let url = "http://127.0.0.1:8000/";
 
+    const encodedPriceRange = encodeURIComponent(selectedPriceRange);
+
     if (uniId && selectedType && selectedPriceRange) {
-      url += `boardings-by-uni-price-type/${uniId}/${selectedPriceRange}/${selectedType}`;
+        url += `boardings-by-uni-price-type/${uniId}/${encodedPriceRange}/${selectedType}`;
     } else if (uniId && selectedType) {
-      url += `boardings-by-uni-type/${uniId}/${selectedType}`;
+        url += `boardings-by-uni-type/${uniId}/${selectedType}`;
     } else if (uniId && selectedPriceRange) {
-      url += `boardings-by-uni-price/${uniId}/${selectedPriceRange}`;
+        url += `boardings-by-uni-price/${uniId}/${encodedPriceRange}`;
     } else if (uniId) {
-      url += `boardings/${uniId}`;
+        url += `boardings/${uniId}`;
     } else if (selectedType && selectedPriceRange) {
-      url += `boardings-by-type-price/${selectedType}/${selectedPriceRange}`;
+        url += `boardings-by-type-price/${selectedType}/${encodedPriceRange}`;
     } else if (selectedType) {
-      url += `boardings-type/${selectedType}`;
+        url += `boardings-type/${selectedType}`;
     } else if (selectedPriceRange) {
-      url += `boardings-price_range/${selectedPriceRange}`;
+        url += `boardings-price_range/${encodedPriceRange}`;
     }
 
     fetchBoardings(url);
-  };
+};
 
   const handleBoarding = (boardingId) => {
     navigate(`/boarding/${boardingId}`);
@@ -171,7 +174,7 @@ const SearchBoardings = () => {
             <div className="boarding-item">
               <p><strong>ID:</strong> {boarding.boarding_id}</p>
               <p><strong>Type:</strong> {boarding.type || 'N/A'}</p>
-              <p><strong>Price Range:</strong> {boarding.price_range || 'N/A'}</p>
+              <p><strong>Price:</strong> {boarding.price || 'N/A'}</p>
               <p><strong>Location:</strong> {boarding.location || 'N/A'}</p>
               <p><strong>Ratings:</strong> {ratings[boarding.boarding_id] || '0'}</p>
             </div>
