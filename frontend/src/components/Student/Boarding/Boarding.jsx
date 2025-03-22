@@ -18,6 +18,7 @@ const BoardingDetails = () => {
   const [requestStatus, setRequestStatus] = useState('');
   const [ratings, setRatings] = useState('');
   const [review, setReview] = useState('');
+  const [contact, setContact] = useState('');
 
   useEffect(() => {
     const token = Cookies.get("accessToken");
@@ -55,6 +56,21 @@ const BoardingDetails = () => {
         setLoading(false);
       }
     };
+    const fetchLandLordContacts = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/get-landlord-contact/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setContact(response.data.contact);
+        setLoading(false);
+        console.log("Landlord Contact:", response.data.contact);
+       
+      } catch (err) {
+        setError("Failed to load contacts.");
+        setLoading(false);
+      }
+    };
+    
     const fetchAverageRatings = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/get-average-rating/${id}`, {
@@ -110,6 +126,7 @@ const BoardingDetails = () => {
       fetchBoardingDetails();
       fetchAverageRatings();
       fetchReviews();
+      fetchLandLordContacts();
     }
   }, [id]);  // Only depends on `id`, since it's needed to fetch boarding details.
   
@@ -216,8 +233,9 @@ const BoardingDetails = () => {
         <p><strong>Location:</strong> {boarding.location}</p>
         <p><strong>University ID:</strong> {boarding.uni_id}</p>
         <p><strong>Landlord ID:</strong> {boarding.landlord_id}</p>
+        <p><strong>Landlord Contact:</strong> {contact}</p>
         <p><strong>Type:</strong> {boarding.type}</p>
-        <p><strong>Price Range:</strong> {boarding.price_range}</p>
+        <p><strong>Price:</strong> {boarding.price}</p>
         <p><strong>Ratings:</strong> {ratings}</p>
         {/* Render Reviews */}
         <div>
