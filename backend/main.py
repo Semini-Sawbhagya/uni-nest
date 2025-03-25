@@ -1,5 +1,5 @@
 from fastapi import FastAPI,Path,HTTPException,Depends,status,UploadFile,File
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 from typing import Annotated,List
 import models
 from models import User,Boarding,University,Payment,Notification,Package,Landlord,Student,StudentReview
@@ -16,6 +16,9 @@ from typing import Union
 import cloudinary
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
+from urllib.parse import unquote
+from sqlalchemy import func,cast, Integer
+import traceback  # Add this import for error tracing
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -91,10 +94,9 @@ class StudentPayment(BaseModel):
     amount: Union[int, float] 
 
 class StudentReviewBase(BaseModel):
-    id: str
     student_id: str
     boarding_id:str
-    ratings: float
+    rating: int = Field(..., ge=1, le=5)  # Ensures rating is between 1 and 5
     review: str
 
 class RequestData(BaseModel):
@@ -131,7 +133,7 @@ class BoardingBase(BaseModel):
     uni_id: int
     landlord_id: str
     img: str
-    price_range: str
+    price: str
     location: str
     type: str
     security: str
@@ -142,7 +144,7 @@ class BoardingBase1(BaseModel):
     uni_id: int
     landlord_id: str
     img: str
-    price_range: str
+    price: str
     location: str
     type: str
     security: str
@@ -151,7 +153,7 @@ class BoardingBase1(BaseModel):
 class AddBoardingBase(BaseModel):
     uni_id: int
     img: str
-    price_range: str
+    price: str
     landlord_userId: str
     location: str
     type: str
@@ -159,7 +161,7 @@ class AddBoardingBase(BaseModel):
     available_space: int
 
 class EditBoardingBase(BaseModel):
-    price_range: str
+    price: str
     location: str
     type: str
     security: str
@@ -227,19 +229,114 @@ async def get_boarding_by_type(type:str,db:db_dependancy):
         print(f"Error fetching boardings: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
     
-@app.get("/boardings-price_range/{price_range}",response_model=List[BoardingBase],status_code=status.HTTP_200_OK)
-async def get_boarding_by_price_range(price_range: str,db:db_dependancy):
+def get_price_range(price: int) -> str:
+    if price < 5000:
+        return "Below Rs: 5000"
+    elif 5000 <= price < 10000:
+        return "Rs: 5000 - Rs: 10000"
+    elif 10000 <= price < 20000:
+        return "Rs: 10000 - Rs: 20000"
+    else:
+        return "Above Rs: 20000"    
+    
+
+
+from sqlalchemy import func, cast, Integer
+
+@app.get("/boardings-price_range/{price_range}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
+async def get_boarding_by_price_range(price_range: str, db: db_dependancy):
     try:
-        if not price_range:
+        decoded_price_range = unquote(price_range).strip()
+
+        if not decoded_price_range:
             raise HTTPException(status_code=400, detail="Price Range is required")
-        boardings =db.query(models.Boarding).filter(models.Boarding.price_range == price_range).all()
+
+        # Correct handling with func.replace() and cast()
+        if decoded_price_range == "Below Rs: 5000":
+            boardings = db.query(models.Boarding).filter(
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) < 5000
+            ).all()
+
+        elif decoded_price_range == "Rs: 5000 - Rs: 10000":
+            boardings = db.query(models.Boarding).filter(
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) >= 5000,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) < 10000
+            ).all()
+
+        elif decoded_price_range == "Rs: 10000 - Rs: 20000":
+            boardings = db.query(models.Boarding).filter(
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) >= 10000,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) < 20000
+            ).all()
+
+        elif decoded_price_range == "Above Rs: 20000":
+            boardings = db.query(models.Boarding).filter(
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) >= 20000
+            ).all()
+
+        else:
+            raise HTTPException(status_code=400, detail="Invalid price range")
+
         if not boardings:
-                raise HTTPException(status_code=404, detail="No boardings found for this university")
+            raise HTTPException(status_code=404, detail="No boardings found for this price range")
+
         return boardings
+
+
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+from sqlalchemy import func, cast, Integer
+
+@app.get("/boardings-by-uni-price/{uni_id}/{price_range}", 
+         response_model=List[BoardingBase], 
+         status_code=status.HTTP_200_OK)
+async def get_boardings_by_uni_price(uni_id: int, price_range: str, db: db_dependancy):
+    try:
+        if not uni_id or not price_range:
+            raise HTTPException(status_code=400, detail="University ID and Price Range are required")
+
+        # Price range logic
+        if price_range == "Below Rs: 5000":
+            boardings = db.query(models.Boarding).filter(
+                models.Boarding.uni_id == uni_id,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) < 5000
+            ).all()
+
+        elif price_range == "Rs: 5000 - Rs: 10000":
+            boardings = db.query(models.Boarding).filter(
+                models.Boarding.uni_id == uni_id,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) >= 5000,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) < 10000
+            ).all()
+
+        elif price_range == "Rs: 10000 - Rs: 20000":
+            boardings = db.query(models.Boarding).filter(
+                models.Boarding.uni_id == uni_id,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) >= 10000,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) < 20000
+            ).all()
+
+        elif price_range == "Above Rs: 20000":
+            boardings = db.query(models.Boarding).filter(
+                models.Boarding.uni_id == uni_id,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) >= 20000
+            ).all()
+
+        else:
+            raise HTTPException(status_code=400, detail="Invalid price range")
+
+        if not boardings:
+            raise HTTPException(status_code=404, detail="No boardings found for this price range")
+
+        return boardings
+
     except Exception as e:
         print(f"Error fetching boardings: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error") 
-    
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
 @app.get("/boardings-by-uni-type/{uni_id}/{type}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
 async def get_boardings_by_uni_and_type(uni_id: int, type: str, db: db_dependancy):
     try:
@@ -261,12 +358,42 @@ async def get_boardings_by_type_and_price(type: str, price_range: str, db: db_de
     try:
         if not type or not price_range:
             raise HTTPException(status_code=400, detail="Type and Price Range are required")
-        boardings = db.query(models.Boarding).filter(
-            models.Boarding.type == type, models.Boarding.price_range == price_range
-        ).all()
+
+        # Price range logic
+        if price_range == "Below Rs: 5000":
+            boardings = db.query(models.Boarding).filter(
+                models.Boarding.type == type,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) < 5000
+            ).all()
+
+        elif price_range == "Rs: 5000 - Rs: 10000":
+            boardings = db.query(models.Boarding).filter(
+                models.Boarding.type == type,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) >= 5000,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) < 10000
+            ).all()
+
+        elif price_range == "Rs: 10000 - Rs: 20000":
+            boardings = db.query(models.Boarding).filter(
+                models.Boarding.type == type,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) >= 10000,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) < 20000
+            ).all()
+
+        elif price_range == "Above Rs: 20000":
+            boardings = db.query(models.Boarding).filter(
+                models.Boarding.type == type,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) >= 20000
+            ).all()
+
+        else:
+            raise HTTPException(status_code=400, detail="Invalid price range")
+
         if not boardings:
             raise HTTPException(status_code=404, detail="No boardings found according to the given criteria")
+
         return boardings
+
     except Exception as e:
         print(f"Error fetching boardings: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
@@ -289,49 +416,85 @@ async def get_types(db: db_dependancy):
     
     return types
 
+
 @app.get('/price-ranges', response_model=List[str])
 async def get_price_ranges(db: db_dependancy):
-    price_ranges = db.query(models.Boarding.price_range).distinct().all()
-    price_ranges = [p[0] for p in price_ranges]
+    try:
+        prices = db.query(models.Boarding.price).distinct().all()
 
-    if not price_ranges:
-        raise HTTPException(status_code=404, detail="No types found")
-    return price_ranges
+        # Handle both string and integer formats
+        price_values = []
+        for p in prices:
+            try:
+                if isinstance(p[0], str):
+                    price_values.append(int(p[0].replace('Rs:', '').strip()))
+                else:
+                    price_values.append(int(p[0]))
+            except ValueError:
+                print(f"Skipping invalid price value: {p[0]}")
+
+        price_ranges = sorted(set(get_price_range(price) for price in price_values))
+
+        if not price_ranges:
+            raise HTTPException(status_code=404, detail="No price ranges found")
+
+        return price_ranges
+    except Exception as e:
+        print(f"Error fetching price ranges: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-@app.get("/boardings-by-uni-price-type/{uni_id}/{price_range}/{type}", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
+@app.get("/boardings-by-uni-price-type/{uni_id}/{price_range}/{type}", 
+         response_model=List[BoardingBase], 
+         status_code=status.HTTP_200_OK)
 async def get_boardings_by_uni_price_and_type(uni_id: int, price_range: str, type: str, db: db_dependancy):
     try:
         if not uni_id or not price_range or not type:
             raise HTTPException(status_code=400, detail="University ID, Price Range, and Type are required")
-        boardings = db.query(models.Boarding).filter(
-            models.Boarding.uni_id == uni_id,
-            models.Boarding.price_range == price_range,
-            models.Boarding.type == type
-        ).all()
+
+        # Price range logic
+        if price_range == "Below Rs: 5000":
+            boardings = db.query(models.Boarding).filter(
+                models.Boarding.uni_id == uni_id,
+                models.Boarding.type == type,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) < 5000
+            ).all()
+
+        elif price_range == "Rs: 5000 - Rs: 10000":
+            boardings = db.query(models.Boarding).filter(
+                models.Boarding.uni_id == uni_id,
+                models.Boarding.type == type,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) >= 5000,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) < 10000
+            ).all()
+
+        elif price_range == "Rs: 10000 - Rs: 20000":
+            boardings = db.query(models.Boarding).filter(
+                models.Boarding.uni_id == uni_id,
+                models.Boarding.type == type,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) >= 10000,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) < 20000
+            ).all()
+
+        elif price_range == "Above Rs: 20000":
+            boardings = db.query(models.Boarding).filter(
+                models.Boarding.uni_id == uni_id,
+                models.Boarding.type == type,
+                cast(func.replace(models.Boarding.price, "Rs: ", ""), Integer) >= 20000
+            ).all()
+
+        else:
+            raise HTTPException(status_code=400, detail="Invalid price range")
+
         if not boardings:
-            raise HTTPException(status_code=404, detail="No boardings found according to  the given criteria")
+            raise HTTPException(status_code=404, detail="No boardings found according to the given criteria")
+
         return boardings
+
     except Exception as e:
         print(f"Error fetching boardings: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
-    
-@app.get("/get_universities/{uni_id}/", response_model=List[BoardingBase], status_code=status.HTTP_200_OK)
-async def get_boardings_by_uni_price_and_type(uni_id: int, price_range: str, type: str, db: db_dependancy):
-    try:
-        if not uni_id or not price_range or not type:
-            raise HTTPException(status_code=400, detail="University ID, Price Range, and Type are required")
-        boardings = db.query(models.Boarding).filter(
-            models.Boarding.uni_id == uni_id,
-            models.Boarding.price_range == price_range,
-            models.Boarding.type == type
-        ).all()
-        if not boardings:
-            raise HTTPException(status_code=404, detail="No boardings found according to  the given criteria")
-        return boardings
-    except Exception as e:
-        print(f"Error fetching boardings: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+
 
 
 @app.get("/get-landlord-details/{student_id}")
@@ -527,12 +690,12 @@ def get_student_id(student_user_id: str, db: Session = Depends(get_db)):
 @app.post("/student-review/")
 def add_review(review: StudentReviewBase, db: Session = Depends(get_db)):
     try:
-        query = text("CALL AddRating(:student_id,:boarding_id, :ratings, :review)")
+        query = text("CALL AddRating(:student_id,:boarding_id, :rating, :review)")
         db.execute(query, {
             "student_id": review.student_id,
             "boarding_id": review.boarding_id,
-            "ratings": review.ratings,
-            "review": review.review,
+            "rating": review.rating,
+            "review": review.review
         })
         db.commit()
     except Exception as e:
@@ -736,7 +899,25 @@ def get_reviews(boarding_id: str, db: Session = Depends(get_db)):
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@app.get("/get-landlord-contact/{boarding_id}")
+def get_landlord_contact(boarding_id: str, db: Session = Depends(get_db)):
+    try:
+        # Call the MySQL function get_landlord_contact and retrieve the contact number
+        query = text("SELECT get_landlord_contact(:boarding_id) AS contact_no")
+        result = db.execute(query, {"boarding_id": boarding_id}).fetchone()
 
+        # Ensure results are valid
+        if not result or result[0] is None:
+            raise HTTPException(status_code=404, detail="Landlord contact not found")
+
+        return {"boarding_id": boarding_id, "contact": result[0]}
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+        
+        
 @app.get("/notifications/{user_id}",status_code=status.HTTP_200_OK)
 def get_notifications(user_id: str,db: Session = Depends(get_db)):
     try:

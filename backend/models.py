@@ -81,7 +81,7 @@ class Boarding(Base):
     uni_id = Column(Integer, ForeignKey("university.uni_id"), nullable=False)
     landlord_id = Column(String(36), ForeignKey("landlord.landlord_id"), nullable=False)
     img = Column(Text)
-    price_range = Column(Enum("Rs: 3000-5000", "Rs: 5000-20000", "other"), nullable=False)
+    price= Column(String(255), nullable=False)
     location = Column(String(255), nullable=False)
     type = Column(Enum("Room", "house", "apartment"), nullable=False)
     security = Column(Text)
@@ -108,7 +108,7 @@ class StudentReview(Base):
     id = Column(String(36), primary_key=True,default=generate_uuid) 
     student_id  = Column(String(36))
     boarding_id = Column(String(36)) 
-    ratings = Column(DECIMAL(3,2))
+    rating = Column(Integer, nullable=False)
     review = Column(String(255), nullable=False)
 
 class RequestData(Base):

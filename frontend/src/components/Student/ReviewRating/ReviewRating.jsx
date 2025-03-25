@@ -65,12 +65,17 @@ const ReviewRating = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8000/student-review/", {
-        student_id: studentId,
-        boarding_id: boardingId,
-        ratings: parseFloat(ratings),
-        review: review,
-      });
+      const response = await axios.post(
+        "http://localhost:8000/student-review/",
+        {
+          student_id: studentId,
+          boarding_id: boardingId,
+          rating: parseInt(ratings, 10),
+          review: review,
+        },
+        { headers: { "Content-Type": "application/json" } }
+      );
+
       console.log("Submitting:", { student_id: studentId, boarding_id: boardingId, ratings, review });
 
       alert(response.data.message);
@@ -91,13 +96,12 @@ const ReviewRating = () => {
           <div className="review-stars">
             {[1, 2, 3, 4, 5].map((star) => (
              <Star
-             key={star}
-             className={`review-star ${ratings >= star ? "selected" : ""}`}
-             onClick={() => setRatings(star)}
-             fill={ratings >= star ? "gold" : "none"}
-             stroke="gold"
-           />
-           
+               key={star}
+               className={`review-star ${ratings >= star ? "selected" : ""}`}
+               onClick={() => setRatings(star)}
+               fill={ratings >= star ? "gold" : "none"}
+               stroke="gold"
+             />
             ))}
           </div>
           <textarea
@@ -107,7 +111,12 @@ const ReviewRating = () => {
             value={review}
             onChange={(e) => setReview(e.target.value)}
           ></textarea>
-          <button type="submit" className="review-button">Submit</button>
+          <button 
+            type="submit" 
+            className="review-button" 
+            disabled={!boardingId}>
+            Submit
+          </button>
         </form>
       </div>
     </div>
