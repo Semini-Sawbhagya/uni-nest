@@ -737,6 +737,18 @@ def get_reviews(boarding_id: str, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+@app.get("/notifications/{user_id}",status_code=status.HTTP_200_OK)
+def get_notifications(user_id: str,db: Session = Depends(get_db)):
+    try:
+        # Call the stored procedure
+        result = db.execute(text("CALL db_get_user_notification(:user_id)"), 
+                            {"user_id": user_id})
+        
+        # Extract data from the result
+        notifications = [{"message": row[0], "date": row[1], "status": row[2]} for row in result.fetchall()]
 
+        # Return an empty list if no notifications are found
+        return notifications if notifications else []
 
-
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
