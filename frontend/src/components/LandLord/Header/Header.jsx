@@ -3,13 +3,14 @@ import './Header.css'
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
-const Landlordheader = () => {
+const header = () => {
   const [userName,setUserName]=useState('');
   useEffect(() => {
       const token = Cookies.get('accessToken'); 
       if (token) {
         try {
           const decoded = jwtDecode(token);
+          console.log("Decoded token:", decoded);  // ✅ Debugging: Check if token is decoded correctly
           setUserName(decoded.sub);
         } catch (error) {
           console.error('Failed to decode token:', error);
@@ -21,15 +22,18 @@ const Landlordheader = () => {
   return (
     <div>
     <header className="dashboard-header">
+        <h1>Welcome back, {userName}!</h1>
       </header>
-    <div className='Landlordheader'>
-      <div className="Landlordheader-content">
-        <h2>List Your Bordings Here</h2>
-        <p>Unlock the potential of your property by connecting with university students seeking comfortable accommodations! List your boarding space on our platform to reach a wider audience, manage inquiries effortlessly, and find the perfect tenants. Start hosting today and make the most of your rental space!</p>
+    <div className='header'>
+      <div className="header-content">
+        <h2>Find Your Bording Here</h2>
+        <p>Find the perfect boarding place for your university life with ease! Our platform connects students with comfortable, affordable, and convenient accommodations near their campus. Browse listings, compare options, and secure your ideal stay hassle-free. Start your search today!</p>
+        <button>View Menu</button>
       </div>
     </div>
     </div>
   )
 }
 
-export default Landlordheader
+export default header
+

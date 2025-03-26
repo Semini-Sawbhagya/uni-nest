@@ -10,7 +10,8 @@ const Footer = () => {
       <div className='footer-content'>
         <div className='footer-content-left'>
           <img src={logo} alt="" />
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Id ipsam laboriosam animi laudantium architecto, illo perspiciatis repellat adipisci voluptatem odit quod minus ipsum officiis quo, modi nihil earum consequatur asperiores!</p>
+          <p>Find Your Perfect Boarding Place
+          Discover the ideal place to stay during your university journey. Our platform helps students easily find comfortable, affordable, and well-located accommodations near their campus. Browse listings, compare prices, and secure your perfect boarding spot with just a few clicks. Start your search today and make your university experience even better!</p>
           <div className='footer-social-icons'>
             <img src={facebook_icon} alt="" />
             <img src={twitter_icon} alt="" />
