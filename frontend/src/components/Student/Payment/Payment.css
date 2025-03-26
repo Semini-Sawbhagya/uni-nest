@@ -1,19 +1,32 @@
 /* Payment container */
 .payment-class {
-  max-width: 800px;
+  max-width: 900px;
   margin: 40px auto;
-  padding: 20px;
+  padding: 25px;
   background: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
   font-family: 'Poppins', sans-serif;
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.payment-class:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
 }
 
 .payment-class h2 {
-  color: #333;
-  margin-bottom: 15px;
-  font-size: 24px;
+  color: #2a2a72;
+  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.payment-class p {
+  font-size: 16px;
+  color: #777;
+  margin-top: 5px;
 }
 
 /* Payment section */
@@ -21,73 +34,128 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 }
 
 .payment img {
-  width: 250px;
+  width: 300px;
   height: auto;
+  transition: transform 0.3s ease;
+}
+
+.payment img:hover {
+  transform: scale(1.05);
 }
 
 /* Form styling */
 .payment-form {
   width: 100%;
-  padding: 15px;
+  max-width: 500px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background: #f9f9f9;
 }
 
 .payment-form .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   text-align: left;
 }
 
 .payment-form label {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  color: #555;
+  color: #2a2a72;
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
-/* Input fields */
 .payment-form .form-control {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 14px;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
   transition: border-color 0.3s ease;
 }
 
 .payment-form .form-control:focus {
-  border-color: rgb(28, 10, 80);
+  border-color: #2a2a72;
   outline: none;
+  background-color: #f1f7ff;
+}
+
+.payment-form .form-control[readonly] {
+  background-color: #f1f1f1;
 }
 
 /* Payment button */
 .payment-form .btn-primary {
   width: 100%;
-  background: rgb(28, 10, 80);
+  background: #2a2a72;
   color: white;
-  padding: 10px;
+  padding: 12px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background 0.3s ease;
-  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .payment-form .btn-primary:hover {
-  background: rgb(28, 10, 80);
+  background: #4a90e2;
+  transform: scale(1.05);
+}
+
+/* Error and Success Messages */
+.alert {
+  margin-top: 15px;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
 /* Responsive Design */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .payment-class {
     max-width: 90%;
+    padding: 20px;
   }
 
   .payment img {
-    width: 60px;
+    width: 250px;
+  }
+
+  .payment-form {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .payment img {
+    width: 180px;
+  }
+
+  .payment-class h2 {
+    font-size: 24px;
+  }
+
+  .payment-form .form-control {
+    font-size: 14px;
+  }
+
+  .payment-form .btn-primary {
+    font-size: 16px;
   }
 }
