@@ -172,11 +172,18 @@ const SearchBoardings = () => {
         {boardings.map((boarding) => (
           <button key={boarding.boarding_id} onClick={() => handleBoarding(boarding.boarding_id)}>
             <div className="boarding-item">
+              <img
+                src={boarding.img}
+                alt="Boarding Place"
+                style={{ width: "300px", height: "200px", objectFit: "cover", borderRadius: "10px" }}
+              />
               <p><strong>ID:</strong> {boarding.boarding_id}</p>
               <p><strong>Type:</strong> {boarding.type || 'N/A'}</p>
               <p><strong>Price:</strong> {boarding.price || 'N/A'}</p>
               <p><strong>Location:</strong> {boarding.location || 'N/A'}</p>
               <p><strong>Ratings:</strong> {ratings[boarding.boarding_id] || '0'}</p>
+              <p><strong>Security:</strong> {boarding.security || 'N/A'}</p>
+              
             </div>
           </button>
         ))}

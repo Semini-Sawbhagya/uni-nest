@@ -1,15 +1,13 @@
 /* Header Section Styling */
 .header {
   height: 70vh; /* Full viewport height */
-  background-size: cover;
-  background-position: center center;
+  background: url('../../../assets/home.jpg') no-repeat center center/cover;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   color: white;
-  margin-bottom: 50px;
 }
 
 /* Header Content Styling */
@@ -107,3 +105,5 @@
     font-size: 1rem;
   }
 }
+
+
