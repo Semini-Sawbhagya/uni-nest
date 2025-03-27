@@ -933,3 +933,18 @@ def get_notifications(user_id: str,db: Session = Depends(get_db)):
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@app.get("/pending_requests", status_code=status.HTTP_200_OK)
+def get_pending_requests(db: Session = Depends(get_db)):
+    try:
+        result = db.execute(text("CALL db_get_pending_requests()"))
+        
+        # Fetch all rows and convert to a list of dictionaries
+        pending_requests = [
+            {"boarding_id": row.boarding_id, "user_name": row.user_name}
+            for row in result
+        ]
+        
+        return pending_requests
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
