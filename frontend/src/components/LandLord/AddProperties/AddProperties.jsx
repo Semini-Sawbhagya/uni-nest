@@ -19,7 +19,7 @@ const AddPropertyPage = () => {
     uni_id: '',
     landlord_userId: '',
     img: '',
-    price_range: '',
+    price: '',
     location: '',
     type: '',
     security: '',
@@ -142,7 +142,7 @@ const AddPropertyPage = () => {
         uni_id: '',
         landlord_userId: '',
         img: '',
-        price_range: '',
+        price: '',
         location: '',
         type: '',
         security: '',
@@ -211,27 +211,19 @@ const AddPropertyPage = () => {
             placeholder="Only if not uploading an image file"
           />
 
-          <label htmlFor="price_range">Price Range:</label>
-          <select
-            name="price_range"
-            value={formData.price_range}
-            onChange={handleChange}
-            required
-            className="form-dropdown"
-          >
-            <option value="">Select a price range</option>
-            {priceRange.map((range, index) => {
-              // Handle both string type and object type
-              const typeValue = typeof range === 'string' ? range : (range.id || range);
-              const typeLabel = typeof range === 'string' ? range : (range.name || range);
-              
-              return (
-                <option key={index} value={typeValue}>
-                  {typeLabel}
-                </option>
-              );
-            })}
-          </select>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span>Rs:</span>
+            <input
+              type="text"
+              id="price"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              placeholder="Enter a price"
+              required
+              style={{ marginLeft: "5px" }}
+            />
+          </div>
 
           <label htmlFor="location">Address:</label>
           <input

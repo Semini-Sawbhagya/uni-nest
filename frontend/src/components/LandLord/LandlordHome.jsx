@@ -83,7 +83,6 @@ const LandlordHome = () => {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <h1>Welcome back, {userName}!</h1>
-        <p>Manage your properties and students from one place.</p>
         <Landlordheader/>
       </header>
 

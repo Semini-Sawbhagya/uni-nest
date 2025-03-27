@@ -20,7 +20,7 @@ const PropertyListing = () => {
   const [expandedReviews, setExpandedReviews] = useState({});
   const [editFormData, setEditFormData] = useState({
     location: '',
-    price_range: '',
+    price: '',
     type: '',
     security: '',
     available_space: ''
@@ -160,7 +160,7 @@ const PropertyListing = () => {
     setSelectedProperty(property);
     setEditFormData({
       location: property.location || '',
-      price_range: property.price_range || '',
+      price: property.price || '',
       type: property.type || '',
       security: property.security || '',
       available_space: property.available_space || ''
@@ -240,8 +240,7 @@ const PropertyListing = () => {
       <Navbar />
       <div className="container">
         <div className="header-section">
-          <h1>My Properties</h1>
-          <p>Welcome, {userName}</p>
+          <h1>Your Properties</h1>
         </div>
 
         <div className="stats-grid1">
@@ -280,7 +279,7 @@ const PropertyListing = () => {
                   </span>
                 </div>
                 <div className="property-details">
-                  <p><span className="label">Price Range:</span> {property.price_range}</p>
+                  <p><span className="label">Price (Rs):</span> {property.price}</p>
                   <p><span className="label">Type:</span> {property.type}</p>
                   <p><span className="label">Security:</span> {property.security}</p>
                   <div>
@@ -381,12 +380,12 @@ const PropertyListing = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="price_range">Price Range</label>
+                  <label htmlFor="price">Price (Rs)</label>
                   <input
                     type="text"
-                    id="price_range"
-                    name="price_range"
-                    value={editFormData.price_range}
+                    id="price"
+                    name="price"
+                    value={editFormData.price}
                     onChange={handleEditInputChange}
                     required
                   />
@@ -400,7 +399,7 @@ const PropertyListing = () => {
                     onChange={handleEditInputChange}
                     required
                   >
-                    <option value="">Select Type</option>
+                    
                     <option value="House">House</option>
                     <option value="Apartment">Apartment</option>
                     <option value="Room">Room</option>
@@ -408,18 +407,14 @@ const PropertyListing = () => {
                 </div>
                 <div className="form-group">
                   <label htmlFor="security">Security</label>
-                  <select
+                  <input
                     id="security"
                     name="security"
                     value={editFormData.security}
                     onChange={handleEditInputChange}
                     required
-                  >
-                    <option value="">Select Security Level</option>
-                    <option value="High">High</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Low">Low</option>
-                  </select>
+                  ></input>
+                 
                 </div>
                 <div className="form-group">
                   <label htmlFor="available_space">Available Spaces</label>
