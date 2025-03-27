@@ -613,7 +613,7 @@ async def get_boarding_by_user_ID(user_id: str,db:db_dependancy, current_user: d
                 uni_id=row.uni_id,
                 landlord_id=row.landlord_id,
                 img=row.img,
-                price_range=row.price_range,
+                price=row.price,
                 location=row.location,
                 type=row.type,
                 security=row.security,
@@ -792,12 +792,12 @@ async def update_boarding(boarding_id: str,boarding: EditBoardingBase,db: Sessio
 @app.post("/properties/")
 async def add_properties(boarding: AddBoardingBase, db: Session = Depends(get_db)):
     try:
-        query = text("CALL db_Create_Boarding(:uni_id,:landlord_userId,:img,:price_range,:location,:type,:security, :available_space)")
+        query = text("CALL db_Create_Boarding(:uni_id,:landlord_userId,:img,:price,:location,:type,:security, :available_space)")
         db.execute(query, {
             "uni_id": boarding.uni_id,
             "landlord_userId": boarding.landlord_userId,
             "img": boarding.img,
-            "price_range": boarding.price_range,
+            "price": boarding.price,
             "location": boarding.location,
             "type": boarding.type,
             "security": boarding.security,
