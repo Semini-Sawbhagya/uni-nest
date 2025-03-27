@@ -225,9 +225,9 @@ const BoardingDetails = () => {
       <div className="boarding-details">
         <h1>Boarding Details</h1>
         <img
-          src={`http://127.0.0.1:8000/images/${boarding.img}`}
-          alt="Boarding Place"
-          style={{ width: "300px", height: "200px", objectFit: "cover", borderRadius: "10px" }}
+                src={boarding.img}
+                alt="Boarding Place"
+                style={{ width: "300px", height: "200px", objectFit: "cover", borderRadius: "10px" }}
         />
         <p><strong>ID:</strong> {boarding.boarding_id}</p>
         <p><strong>Location:</strong> {boarding.location}</p>
