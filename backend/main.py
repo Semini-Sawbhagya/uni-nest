@@ -19,6 +19,7 @@ from cloudinary.utils import cloudinary_url
 from urllib.parse import unquote
 from sqlalchemy import func,cast, Integer
 import traceback  # Add this import for error tracing
+import json
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -918,24 +919,31 @@ def get_landlord_contact(boarding_id: str, db: Session = Depends(get_db)):
 
         
         
-@app.get("/notifications/{user_id}",status_code=status.HTTP_200_OK)
-def get_notifications(user_id: str,db: Session = Depends(get_db)):
+@app.get("/notifications/{user_id}", status_code=status.HTTP_200_OK)
+def get_notifications(user_id: str, db: Session = Depends(get_db)):
     try:
-        # Call the stored procedure
-        result = db.execute(text("CALL db_get_user_notification(:user_id)"), 
-                            {"user_id": user_id})
+        # Set the output parameter to NULL before calling the procedure
+        db.execute(text("SET @p_result = NULL"))
         
-        # Extract data from the result
-        notifications = [{"message": row[0], "date": row[1], "status": row[2]} for row in result.fetchall()]
-
-        # Return an empty list if no notifications are found
-        return notifications if notifications else []
-
+        # Call the stored procedure
+        db.execute(text("CALL db_get_user_notification(:user_id, @p_result)"), 
+                   {"user_id": user_id})
+        
+        # Fetch the result
+        result = db.execute(text("SELECT @p_result")).scalar()
+        
+        # Parse the JSON result
+        if result:
+            notification_data = json.loads(result)
+            return notification_data.get('data', [])
+        
+        return []
+    
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
 @app.get("/pending_requests", status_code=status.HTTP_200_OK)
-def get_pending_requests(db: Session = Depends(get_db)):
+def get_pending_requests(db: Session = Depends(get_db),current_user: dict = Depends(roles_required(["landlord"]))):
     try:
         result = db.execute(text("CALL db_get_pending_requests()"))
         
