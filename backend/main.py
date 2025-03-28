@@ -949,10 +949,21 @@ def get_pending_requests(db: Session = Depends(get_db),current_user: dict = Depe
         
         # Fetch all rows and convert to a list of dictionaries
         pending_requests = [
-            {"boarding_id": row.boarding_id, "user_name": row.user_name}
+            {"boarding_id": row.boarding_id, "user_name": row.user_name,"id":row.id}
             for row in result
         ]
         
         return pending_requests
     except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+      
+@app.put("/update-request/{id}/{status}", status_code=status.HTTP_200_OK)
+async def update_request(id: str, status: str, db: Session = Depends(get_db),current_user = Depends(roles_required(["landlord"]))):
+    try:
+        db.execute(text("CALL db_update_request(:id, :status)"), 
+                   {"id": id, "status": status})
+        db.commit()
+        return {"message": "Request updated successfully"}
+    except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
