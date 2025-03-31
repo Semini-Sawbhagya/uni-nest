@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import './NavBar.css';
-import logo from '../../../assets/logo.png';
+import Uni_Nest2 from '../../../assets/Uni_Nest2.png';
 import { Link } from 'react-router-dom';
 import search_icon from '../../../assets/search_icon.png';
 import { useNavigate } from 'react-router-dom';
@@ -58,7 +58,7 @@ const Navbar = () => {
 
   return (
     <div className='navbar'>
-      <Link to='/'><img src={logo} alt="logo" className="logo"/></Link>
+      <Link to='/'><img src={Uni_Nest2} alt="logo" className="logo"/></Link>
       <ul className="navbar-menu">
         <Link to='/home' onClick={() => setMenu("home")} className={menu === "home" ? "active" : ""}>Home</Link>
         <Link to='/payment' onClick={() => setMenu("payment")} className={menu === "payment" ? "active" : ""}>Payment</Link>
@@ -79,7 +79,6 @@ const Navbar = () => {
       
       <div className="navbar-right">
         <img src={search_icon} alt="search icon" />
-        <button>Sign In</button>
         <button onClick={handleLogout}>Logout</button>
       </div>
     </div>

@@ -1,166 +1,113 @@
-/* Review Rating Container */
+/* Review Container */
 .review-container {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 2rem;
-  background-color: #ffffff;
-  border-radius: 12px;
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #ffffff;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-top: 5%;
-  background-color: rgb(28, 10, 80);
+  border-radius: 15px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Heading */
+.review-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
 .review-heading {
-  font-size: 2rem;
+  font-size: 30px;
+  color: #2a2a72;
+  margin-bottom: 20px;
   font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 2rem;
-  text-align: center;
-  letter-spacing: 1px;
-  font-family: 'Poppins', sans-serif;
 }
 
 /* Star Rating */
 .review-stars {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .review-star {
+  width: 32px;
+  height: 32px;
   cursor: pointer;
-  transition: transform 0.2s ease, fill 0.3s ease;
-  width: 30px;
-  height: 30px;
+  transition: transform 0.2s ease;
 }
 
 .review-star:hover {
-  fill: #FFD700; /* Gold hover effect */
-  transform: scale(1.1); /* Slight zoom on hover */
+  transform: scale(1.2);
 }
 
-.selected {
-  fill: #FFD700 !important; /* Fully filled gold stars */
+.review-star.selected {
+  fill: gold !important;
+  stroke: #ffd700;
 }
 
-.deselected {
-  color: #D1D5DB; /* Light gray stars */
-}
-
-/* Input and Textarea */
+/* Review Textarea */
 .review-textarea {
   width: 100%;
-  padding: 1rem;
-  border: 1px solid #D1D5DB;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #4A5568;
-  background-color: #F9FAFB;
+  height: 100px;
+  padding: 15px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 16px;
+  resize: none;
+  outline: none;
+  background: #f9f9f9;
   transition: border-color 0.3s ease;
-  resize: vertical;
 }
 
 .review-textarea:focus {
-  border-color: #4A90E2;
-  outline: none;
+  border-color: #2a2a72;
+  background: #f1f7ff;
 }
 
+/* Submit Button */
 .review-button {
   width: 100%;
-  padding: 1rem;
-  font-size: 1.2rem;
-  font-weight: 600;
-  background-color: #3E3F41;
+  background: #2a2a72;
   color: #ffffff;
+  padding: 12px 0;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  margin-top: 1.5rem;
+  font-size: 18px;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease;
+  margin-top: 15px;
 }
 
 .review-button:hover {
-  background-color: #FFD700;
-  color: #000;
+  background: #4a90e2;
   transform: scale(1.05);
 }
 
 .review-button:disabled {
-  background-color: #D1D5DB;
+  background: #ccc;
   cursor: not-allowed;
-}
-
-/* Review Cards */
-.review-card {
-  background-color: #ffffff;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.review-card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 0.5rem;
-}
-
-.review-card-content {
-  font-size: 1rem;
-  color: #555;
-  line-height: 1.5;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .review-container {
     max-width: 90%;
-    padding: 1.5rem;
+    padding: 20px;
   }
 
-  .review-heading {
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .review-stars {
-    gap: 1rem;
-    flex-direction: row;
-  }
-
-  .review-button {
-    font-size: 1rem;
-    padding: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .review-container {
-    max-width: 100%;
-    padding: 1rem;
-  }
-
-  .review-heading {
-    font-size: 1.6rem;
-  }
-
-  .review-stars {
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  .review-button {
-    font-size: 1rem;
-    padding: 1rem;
+  .review-star {
+    width: 28px;
+    height: 28px;
   }
 
   .review-textarea {
-    font-size: 0.95rem;
+    font-size: 14px;
+  }
+
+  .review-button {
+    font-size: 16px;
   }
 }

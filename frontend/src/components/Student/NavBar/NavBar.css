@@ -1,6 +1,6 @@
 /* Navbar Styling */
 .navbar {
-  display: flex;
+  display:stretch;
   justify-content: space-between;
   align-items: center;
   padding: 20px 40px;
@@ -13,9 +13,17 @@
 
 /* Logo Styling */
 .logo {
-  height: 50px;
-  cursor: pointer;
+  width: 150px;
+  height: 200px;
+  object-fit: contain;
 }
+
+@media (max-width: 768px) {
+  .logo {
+    width: 150px; /* Adjust for smaller screens */
+  }
+}
+
 
 /* Navbar Menu Styling */
 .navbar-menu {

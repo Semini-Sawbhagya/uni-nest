@@ -3,7 +3,7 @@ import './Footer.css';
 import facebook_icon from '../../assets/facebook_icon.png';
 import twitter_icon from '../../assets/twitter_icon.png';
 import linkedin_icon from '../../assets/linkedin_icon.png';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/Uni_Nest1.png';
 const Footer = () => {
   return (
     <div className='footer' id='footer'>  
