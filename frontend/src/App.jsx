@@ -20,6 +20,7 @@ import MyBoarding from './components/Student/MyBoarding/MyBoarding'
 import ReviewRating from './components/Student/ReviewRating/ReviewRating'
 import AboutUs from './components/Student/AboutUs/AboutUs'
 import ManageStudents from './components/LandLord/ManageStudents/ManageStudents'
+import ManageRequests from './components/LandLord/ManageRequests/ManageRequests'
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
       <Route path="/get-status" element={<ProtectedRoute allowedRoles={['student']}><Boarding/></ProtectedRoute>}/>
       <Route path="/get-average-rating/:id" element={<ProtectedRoute allowedRoles={['student']}><Boarding/></ProtectedRoute>}/>
       <Route path="/get-reviews/:id" element={<ProtectedRoute allowedRoles={['student']}><Boarding/></ProtectedRoute>}/>
+      <Route path="/manage-requests" element={<ProtectedRoute allowedRoles={['landlord']}><ManageRequests/></ProtectedRoute>} />
      
     </Routes>
     

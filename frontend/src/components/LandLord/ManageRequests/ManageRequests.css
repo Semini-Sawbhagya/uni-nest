@@ -1,0 +1,123 @@
+/* ManageRequests.css */
+.manage-requests-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    min-height: calc(100vh - 200px);
+  }
+  
+  .manage-requests-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+  }
+  
+  .manage-requests-table thead {
+    background-color: #2c3e50;
+    color: white;
+  }
+  
+  .manage-requests-table th,
+  .manage-requests-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .manage-requests-table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .manage-requests-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .manage-requests-accept,
+  .manage-requests-reject {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+  }
+  
+  .manage-requests-accept {
+    background-color: #2ecc71;
+    color: white;
+  }
+  
+  .manage-requests-reject {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .manage-requests-accept:hover {
+    background-color: #27ae60;
+    transform: scale(1.05);
+  }
+  
+  .manage-requests-reject:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+  }
+  
+  .manage-requests-container.error {
+    background-color: #ffebee;
+    color: #d32f2f;
+    text-align: center;
+    padding: 30px;
+    border-radius: 8px;
+  }
+  
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    .manage-requests-table {
+      font-size: 14px;
+    }
+  
+    .manage-requests-table th,
+    .manage-requests-table td {
+      padding: 10px;
+    }
+  
+    .manage-requests-actions {
+      flex-direction: column;
+      gap: 5px;
+    }
+  
+    .manage-requests-accept,
+    .manage-requests-reject {
+      width: 100%;
+      padding: 6px 10px;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .manage-requests-container {
+      padding: 10px;
+    }
+  
+    .manage-requests-table {
+      font-size: 12px;
+    }
+  
+    .manage-requests-table th,
+    .manage-requests-table td {
+      padding: 8px;
+    }
+  }
+  
+  /* Loading and Empty State Styles */
+  .manage-requests-container p {
+    text-align: center;
+    color: #7f8c8d;
+    font-style: italic;
+    margin-top: 50px;
+  }

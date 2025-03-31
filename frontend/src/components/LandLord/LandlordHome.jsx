@@ -137,13 +137,13 @@ const LandlordHome = () => {
           </button>
         </div>
         <div className="action-card">
-          <h2>Subscription Plan</h2>
-          <p>View or upgrade your current plan.</p>
+          <h2>Manage Requests</h2>
+          <p>Accept or Reject Students' requests.</p>
           <button 
             className="btn-view-plan"
-            onClick={() => handleNavigation('/packages')}
+            onClick={() => handleNavigation('/manage-requests')}
           >
-            View Plan
+            Manage Requests
           </button>
         </div>
       </div>
