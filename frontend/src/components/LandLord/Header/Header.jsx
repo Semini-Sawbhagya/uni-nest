@@ -20,7 +20,7 @@ const Landlordheader = () => {
     }, []);
   return (
     <div>
-    <header className="dashboard-header">
+    <header className="Landlord-dashboard-header">
       </header>
       <div className='Landlordheader'>
       <div className="Landlordheader-content">

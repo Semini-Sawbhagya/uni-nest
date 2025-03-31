@@ -21,16 +21,18 @@ const header = () => {
     }, []);
   return (
     <div>
-    <header className="dashboard-header">
-        <h1>Welcome back, {userName}!</h1>
+    <header className="student-dashboard-header">
+        <h1 className='student-name'>Welcome back, {userName}!</h1>
       </header>
-    <div className='header'>
-      <div className="header-content">
-        <h2>Find Your Bording Here</h2>
+      <div className='student-header'>
+      <div className="student-header-content">
+        <h2>Find Your Boarding Here</h2>
         <p>Find the perfect boarding place for your university life with ease! Our platform connects students with comfortable, affordable, and convenient accommodations near their campus. Browse listings, compare options, and secure your ideal stay hassle-free. Start your search today!</p>
-        
       </div>
-    </div>
+
+      <div className="student-header-image"></div>
+      </div>
+
     </div>
   )
 }

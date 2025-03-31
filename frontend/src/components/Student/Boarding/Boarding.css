@@ -63,6 +63,17 @@
   background-color: #3e8e41;
   transform: scale(0.98);
 }
+.small-stars {
+  display: inline-flex;
+  gap: 3px;
+  margin-left: 5px;
+}
+
+.small-star {
+  width: 16px;
+  height: 16px;
+}
+
 
 .error {
   color: #851511;

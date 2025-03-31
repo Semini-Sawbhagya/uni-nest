@@ -49,8 +49,12 @@ const Navbar = () => {
         <Link to='/landlord-home' onClick={() => setMenu("home")} className={menu === "home" ? "active" : ""}>Home</Link>
         <Link to='/add-properties' onClick={() => setMenu("add-properties")} className={menu === "add-properties" ? "active" : ""}>Add Properties</Link>
         <Link to='/Manage-students' onClick={() => setMenu("Manage-students")} className={menu === "Manage-students" ? "active" : ""}>Manage Students</Link>
+
         <Link to='/manage-requests' onClick={() => setMenu("Manage-requests")} className={menu === "Manage-requests" ? "active" : ""}>Manage Requests</Link>
         
+
+        <Link to='/about-us' onClick={() => setMenu("about-us")} className={menu === "about-us" ? "active" : ""}>About Us</Link> 
+
         {/* Pass the dynamic boardingId in the URL */}
         <Link 
           to='/properties'  
@@ -60,7 +64,6 @@ const Navbar = () => {
           My Boardings
         </Link>
         
-        <a href='#app-download' onClick={() => setMenu("about-us")} className={menu === "about-us" ? "active" : ""}>About Us</a>
         <a href='#footer' onClick={() => setMenu("contact-us")} className={menu === "contact-us" ? "active" : ""}>Contact Us</a>
       </ul>
       

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./SearchBoardings.css";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Star } from "lucide-react";
 
 const SearchBoardings = () => {
   const [uniId, setUniId] = useState("");
@@ -11,8 +12,8 @@ const SearchBoardings = () => {
   const [universities, setUniversities] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [types, setTypes] = useState([]); 
-  const [selectedType, setSelectedType] = useState(""); 
+  const [types, setTypes] = useState([]);
+  const [selectedType, setSelectedType] = useState("");
   const navigate = useNavigate();
   const [ratings, setRatings] = useState({});
 
@@ -31,7 +32,7 @@ const SearchBoardings = () => {
     const fetchTypes = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/types");
-        setTypes(response.data); 
+        setTypes(response.data);
       } catch (err) {
         console.error("Error fetching types:", err);
         setError("Failed to load types.");
@@ -42,7 +43,7 @@ const SearchBoardings = () => {
     const fetchPrice_Range = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/price-ranges");
-        setPriceRange(response.data); 
+        setPriceRange(response.data);
       } catch (err) {
         console.error("Error fetching price-range:", err);
         setError("Failed to load price-range.");
@@ -57,7 +58,7 @@ const SearchBoardings = () => {
       return response.data.p_ratings;
     } catch (err) {
       console.error(`Failed to load ratings for ${boardingId}:`, err);
-      return "N/A"; 
+      return "N/A";
     }
   };
 
@@ -92,8 +93,8 @@ const SearchBoardings = () => {
 
   const handleSearch = () => {
     if (!uniId && !selectedType && !selectedPriceRange) {
-        setError("Please select at least one filter.");
-        return;
+      setError("Please select at least one filter.");
+      return;
     }
 
     let url = "http://127.0.0.1:8000/";
@@ -101,71 +102,73 @@ const SearchBoardings = () => {
     const encodedPriceRange = encodeURIComponent(selectedPriceRange);
 
     if (uniId && selectedType && selectedPriceRange) {
-        url += `boardings-by-uni-price-type/${uniId}/${encodedPriceRange}/${selectedType}`;
+      url += `boardings-by-uni-price-type/${uniId}/${encodedPriceRange}/${selectedType}`;
     } else if (uniId && selectedType) {
-        url += `boardings-by-uni-type/${uniId}/${selectedType}`;
+      url += `boardings-by-uni-type/${uniId}/${selectedType}`;
     } else if (uniId && selectedPriceRange) {
-        url += `boardings-by-uni-price/${uniId}/${encodedPriceRange}`;
+      url += `boardings-by-uni-price/${uniId}/${encodedPriceRange}`;
     } else if (uniId) {
-        url += `boardings/${uniId}`;
+      url += `boardings/${uniId}`;
     } else if (selectedType && selectedPriceRange) {
-        url += `boardings-by-type-price/${selectedType}/${encodedPriceRange}`;
+      url += `boardings-by-type-price/${selectedType}/${encodedPriceRange}`;
     } else if (selectedType) {
-        url += `boardings-type/${selectedType}`;
+      url += `boardings-type/${selectedType}`;
     } else if (selectedPriceRange) {
-        url += `boardings-price_range/${encodedPriceRange}`;
+      url += `boardings-price_range/${encodedPriceRange}`;
     }
 
     fetchBoardings(url);
-};
+  };
 
   const handleBoarding = (boardingId) => {
     navigate(`/boarding/${boardingId}`);
   };
 
   return (
-    <div className="container">
+    <div className="search-container">
       <h1 className="heading">Search Boarding Places</h1>
-      <div className="input-container">
-        <div>
-          <label>University:</label>
-          <select className="select-field" value={uniId} onChange={(e) => setUniId(e.target.value)}>
-            <option value="">Select a University</option>
-            {universities.map((university) => (
-              <option key={university.uni_id} value={university.uni_id}>
-                {university.name}
-              </option>
-            ))}
-          </select>
+      <div className="search-card">
+        <div className="input-container">
+          <div>
+            <label>University:</label>
+            <select className="select-field" value={uniId} onChange={(e) => setUniId(e.target.value)}>
+              <option value="">Select a University</option>
+              {universities.map((university) => (
+                <option key={university.uni_id} value={university.uni_id}>
+                  {university.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label>Type:</label>
+            <select
+              className="select-field"
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+            >
+              <option value="">Select a Type</option>
+              {types.map((type) => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label>Price Range:</label>
+            <select
+              className="select-field"
+              value={selectedPriceRange}
+              onChange={(e) => setSelectedPriceRange(e.target.value)}
+            >
+              <option value="">Select a Price Range</option>
+              {priceRanges.map((priceRange) => (
+                <option key={priceRange} value={priceRange}>{priceRange}</option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div>
-          <label>Type:</label>
-          <select
-            className="select-field"
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value)}
-          >
-            <option value="">Select a Type</option>
-            {types.map((type) => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label>Price Range:</label>
-          <select
-            className="select-field"
-            value={selectedPriceRange}
-            onChange={(e) => setSelectedPriceRange(e.target.value)}
-          >
-            <option value="">Select a Price Range</option>
-            {priceRanges.map((priceRange) => (
-              <option key={priceRange} value={priceRange}>{priceRange}</option>
-            ))}
-          </select>
-        </div>
+        <button onClick={handleSearch} className="search-button">Search</button>
       </div>
-      <button onClick={handleSearch} className="button">Search</button>
       {loading && <p>Loading...</p>}
       {error && <p className="error">{error}</p>}
       <div className="boarding-list">
@@ -181,9 +184,34 @@ const SearchBoardings = () => {
               <p><strong>Type:</strong> {boarding.type || 'N/A'}</p>
               <p><strong>Price:</strong> {boarding.price || 'N/A'}</p>
               <p><strong>Location:</strong> {boarding.location || 'N/A'}</p>
-              <p><strong>Ratings:</strong> {ratings[boarding.boarding_id] || '0'}</p>
+              <svg width="0" height="0">
+                <linearGradient id="halfGradient">
+                  <stop offset="50%" stopColor="gold" />
+                  <stop offset="50%" stopColor="none" />
+                </linearGradient>
+              </svg>
+
+              <p><strong>Ratings:</strong> {ratings[boarding.boarding_id] ? Number(ratings[boarding.boarding_id]).toFixed(1) : "No ratings yet"}
+                <span className="small-stars">
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const ratingValue = Number(ratings[boarding.boarding_id]) || 0; // Convert to number
+                    const fullStar = ratingValue >= star;
+                    const halfStar = ratingValue >= star - 0.5 && ratingValue < star;
+
+                    return (
+                      <Star
+                        key={star}
+                        className="small-star"
+                        fill={fullStar ? "gold" : halfStar ? "url(#halfGradient)" : "none"}
+                        stroke="gold"
+                        size={16} 
+                      />
+                    );
+                  })}
+                </span>
+              </p>
+
               <p><strong>Security:</strong> {boarding.security || 'N/A'}</p>
-              
             </div>
           </button>
         ))}

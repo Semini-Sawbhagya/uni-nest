@@ -1,5 +1,5 @@
 import React from "react";
-import "../SignUp/SignUp.css";
+import "./Login.css";
 import axios from 'axios'
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -44,6 +44,7 @@ const Login = () => {
 
 
   return (
+    <div className="login-page">
     <div className="signup-container">
       <div className="signup-card">
         <h2 className="signup-title">Login</h2>
@@ -77,6 +78,7 @@ const Login = () => {
           </button>
         </form>
       </div>
+    </div>
     </div>
   );
 };

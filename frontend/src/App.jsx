@@ -43,7 +43,7 @@ function App() {
       <Route path="/boarding/:id" element={<ProtectedRoute allowedRoles={['student']}><Boarding/></ProtectedRoute>}/>
       <Route path="/my-boarding/:id" element={<ProtectedRoute allowedRoles={['student']}><MyBoarding/></ProtectedRoute>}/>
       <Route path="/review-rating" element={<ProtectedRoute allowedRoles={['student']}><ReviewRating/></ProtectedRoute>}/>
-      <Route path="/about-us" element={<ProtectedRoute allowedRoles={['student']}><AboutUs/></ProtectedRoute>}/>   
+      <Route path="/about-us" element={<AboutUs/>} />  
       <Route path="/Manage-students" element={<ProtectedRoute allowedRoles={['landlord']}><ManageStudents/></ProtectedRoute>} />
       <Route path="/add-request" element={<ProtectedRoute allowedRoles={['student']}><Boarding/></ProtectedRoute>}/>
       <Route path="/get-status" element={<ProtectedRoute allowedRoles={['student']}><Boarding/></ProtectedRoute>}/>

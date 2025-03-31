@@ -5,6 +5,8 @@ import Cookies from "js-cookie";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import "leaflet/dist/leaflet.css";
 import "./MyBoarding.css";
+import { Star } from "lucide-react";
+
 import Navbar from "../NavBar/NavBar";
 
 const BoardingDetails = () => {
@@ -13,9 +15,9 @@ const BoardingDetails = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [coords, setCoords] = useState({ lat: 6.9271, lng: 79.8612 }); // Default coordinates (Colombo)
-  const [ratings, setRatings] = useState({});
+  const [ratings, setRatings] = useState('');
   const [review, setReview] = useState([]);
-
+  const [contact, setContact] = useState('');
   useEffect(() => {
     const token = Cookies.get("accessToken");
 
@@ -37,7 +39,20 @@ const BoardingDetails = () => {
         setLoading(false);
       }
     };
-
+    const fetchLandLordContacts = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/get-landlord-contact/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setContact(response.data.contact);
+        setLoading(false);
+        console.log("Landlord Contact:", response.data.contact);
+       
+      } catch (err) {
+        setError("Failed to load contacts.");
+        setLoading(false);
+      }
+    };
     const fetchAverageRatings = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/get-average-rating/${id}`, {
@@ -87,6 +102,7 @@ const BoardingDetails = () => {
       fetchBoardingDetails();
       fetchAverageRatings();
       fetchReviews();
+      fetchLandLordContacts();
     }
   }, [id]);
 
@@ -98,7 +114,7 @@ const BoardingDetails = () => {
     <div>
       <Navbar />
       <div className="boarding-details">
-        <h1>My Boarding Details</h1>
+        <h1 className="my-boarding-h1">My Boarding Details</h1>
         <img
           src={boarding.img}
           alt="Boarding Place"
@@ -106,15 +122,41 @@ const BoardingDetails = () => {
         />
         <p><strong>ID:</strong> {boarding.boarding_id}</p>
         <p><strong>Location:</strong> {boarding.location}</p>
-        <p><strong>Latitude:</strong> {coords.lat}</p>
-        <p><strong>Longitude:</strong> {coords.lng}</p>
         <p><strong>University ID:</strong> {boarding.uni_id}</p>
-        <p><strong>Landlord ID:</strong> {boarding.landlord_id}</p>
         <p><strong>Type:</strong> {boarding.type}</p>
         <p><strong>Price:</strong> {boarding.price}</p>
-        <p><strong>Ratings:</strong> {ratings ? ratings.averageRating : 'No ratings available'}</p> {/* Assuming 'averageRating' exists */}
+        <p><strong>Landlord Contact:</strong> {contact}</p>
+        <svg width="0" height="0">
+          <linearGradient id="halfGradient">
+            <stop offset="50%" stopColor="gold" />
+            <stop offset="50%" stopColor="none" />
+          </linearGradient>
+        </svg>
+
+        <p><strong>Ratings:</strong> {ratings[boarding.boarding_id] ? Number(ratings[boarding.boarding_id]).toFixed(1) : "No ratings yet"}
+          <span className="small-stars">
+            {[1, 2, 3, 4, 5].map((star) => {
+              const ratingValue = Number(ratings[boarding.boarding_id]) || 0; // Convert to number
+              const fullStar = ratingValue >= star;
+              const halfStar = ratingValue >= star - 0.5 && ratingValue < star;
+
+              return (
+                <Star
+                  key={star}
+                  className="small-star"
+                  fill={fullStar ? "gold" : halfStar ? "url(#halfGradient)" : "none"}
+                  stroke="gold"
+                  size={16} 
+                />
+              );
+            })}
+          </span>
+        </p>
+
+        <p><strong>Security:</strong> {boarding.security}</p>
+        <p><strong>Available Space:</strong> {boarding.available_space}</p>
         <div>
-          <h2 className="heading">Reviews</h2>
+          <h2 className="my-boarding-h2">Reviews</h2>
           {review && review.length > 0 ? (
             review.map((item, index) => (
               <div key={index} className="review-item">
@@ -126,9 +168,6 @@ const BoardingDetails = () => {
             <p>No reviews yet.</p>
           )}
         </div>
-
-        <p><strong>Security:</strong> {boarding.security}</p>
-        <p><strong>Available Space:</strong> {boarding.available_space}</p>
         <div>
           <MapContainer
             center={coords}

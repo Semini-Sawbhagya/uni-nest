@@ -1,0 +1,80 @@
+/* Restrict styles to only the login page */
+.login-page {
+    font-family: 'Arial', sans-serif;
+    background: url(../../assets/login.jpeg) no-repeat center center/cover;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Now, styles inside .login-page only apply to the login page */
+.login-page .signup-container {
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.5); /* Transparent effect */
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-page .signup-title {
+    font-size: 1.5rem;
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+/* Form styling */
+.login-page .form-group {
+    margin-bottom: 1.2rem;
+    text-align: left;
+}
+
+.login-page .form-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.login-page .form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.3s ease-in-out;
+}
+
+.login-page .form-input:focus {
+    border-color: rgb(28, 10, 80);
+}
+
+/* Submit button */
+.login-page .signup-button {
+    width: 100%;
+    padding: 10px;
+    background:rgb(28, 10, 80);
+    color: white;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.login-page .signup-button:hover {
+    background: rgb(54, 21, 155);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .login-page .signup-container {
+        width: 90%;
+        padding: 1.5rem;
+    }
+}
