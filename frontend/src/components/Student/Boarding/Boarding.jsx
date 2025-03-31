@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import {Star} from "lucide-react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -77,9 +78,7 @@ const BoardingDetails = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         setRatings(response.data.p_ratings);
-        setLoading(false);
-  
-        
+        setLoading(false);  
       } catch (err) {
         setError("Failed to load ratings.");
         setLoading(false);
@@ -236,8 +235,35 @@ const BoardingDetails = () => {
         <p><strong>Landlord Contact:</strong> {contact}</p>
         <p><strong>Type:</strong> {boarding.type}</p>
         <p><strong>Price:</strong> {boarding.price}</p>
-        <p><strong>Ratings:</strong> {ratings}</p>
-        {/* Render Reviews */}
+        <svg width="0" height="0">
+          <linearGradient id="halfGradient">
+            <stop offset="50%" stopColor="gold" />
+            <stop offset="50%" stopColor="none" />
+          </linearGradient>
+        </svg>
+
+        <p><strong>Ratings:</strong> {ratings[boarding.boarding_id] ? Number(ratings[boarding.boarding_id]).toFixed(1) : "No ratings yet"}
+          <span className="small-stars">
+            {[1, 2, 3, 4, 5].map((star) => {
+              const ratingValue = Number(ratings[boarding.boarding_id]) || 0; // Convert to number
+              const fullStar = ratingValue >= star;
+              const halfStar = ratingValue >= star - 0.5 && ratingValue < star;
+
+              return (
+                <Star
+                  key={star}
+                  className="small-star"
+                  fill={fullStar ? "gold" : halfStar ? "url(#halfGradient)" : "none"}
+                  stroke="gold"
+                  size={16} 
+                />
+              );
+            })}
+          </span>
+        </p>
+
+
+
         <div>
             <h2 className="heading">Reviews</h2>
             {review && review.length > 0 ? (

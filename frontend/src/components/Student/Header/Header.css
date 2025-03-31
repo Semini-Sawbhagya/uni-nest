@@ -1,28 +1,87 @@
-/* Header Section Styling */
 .header {
-  height: 70vh; /* Full viewport height */
-  background: url('../../../assets/home.jpg') no-repeat center center/cover;
-  position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  height: 70vh; 
+  margin-bottom: 50px;
   color: white;
 }
+.dashboard-header {
+  background-color: #ffffff; /* Deep navy for a modern, professional feel */
+  color: #ffffff; /* Clean white text for contrast */
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Balanced layout */
+  border-radius: 12px;
+  margin-bottom: 30px;
+  animation: fadeInSlide 1s ease-out;
+}
 
-/* Header Content Styling */
+.dashboard-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  margin: 0;
+  color: #f5f5f5;
+}
+
+.dashboard-header .user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #c5cae9;
+}
+
+/* Animation for Smooth Entry */
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .user-name {
+    font-size: 1rem;
+  }
+}
+
 .header-content {
-  position: absolute;
-  bottom: 10%;
-  left: 10%;
-  max-width: 60%;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.5); /* Slightly dark background for text contrast */
-  padding: 30px;
+  flex: 1; /* 1 part for content */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start; 
+  padding: 40px;
+  background-color: rgba(0, 0, 0, 0.5); 
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  text-align: left;
   animation: fadeIn 2s ease-out;
+}
+
+.header-image {
+  flex: 3; /* 3 parts for image */
+  background: url('../../../assets/stylish-modern-sofa-design-compressed.jpg') no-repeat center center/cover;
+  border-radius: 8px;
 }
 
 /* Heading Styling */
@@ -61,25 +120,19 @@
   transform: scale(1.05);
 }
 
-/* Animation for Fade In */
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* Responsive Design for Tablets and Smaller Screens */
 @media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+  }
+
+  .header-content, .header-image {
+    flex: 1;
+    width: 100%;
+  }
+
   .header-content {
-    left: 5%;
-    right: 5%;
-    max-width: 90%;
-    bottom: 8%;
+    padding: 20px;
   }
 
   .header-content h2 {
@@ -105,5 +158,3 @@
     font-size: 1rem;
   }
 }
-
-
