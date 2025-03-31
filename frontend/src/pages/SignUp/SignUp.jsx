@@ -37,6 +37,7 @@ const SignUp = () => {
     };
 
     return (
+        <div className="signup-page">
         <div className="signup-container">
             <h1 className="main-title">Uni Nest</h1> {/* Main title */}
             <div className="signup-card">
@@ -91,6 +92,7 @@ const SignUp = () => {
                 </form>
                 <p className="signup-footer">Already Have an Account? <Link to="/login" className="login-link">Login</Link></p>
             </div>
+        </div>
         </div>
     );
 };

@@ -1,5 +1,5 @@
 /* Header Section Styling */
-.Landlordheader {
+.Landlord-dashboard-header {
   height: 70vh; /* Full viewport height */
   background: url('../../../assets/design.jpg') no-repeat center center/cover;
   position: relative;

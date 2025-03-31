@@ -156,7 +156,7 @@ const BoardingDetails = () => {
         <p><strong>Security:</strong> {boarding.security}</p>
         <p><strong>Available Space:</strong> {boarding.available_space}</p>
         <div>
-          <h2 className=".my-boarding-h2">Reviews</h2>
+          <h2 className="my-boarding-h2">Reviews</h2>
           {review && review.length > 0 ? (
             review.map((item, index) => (
               <div key={index} className="review-item">
