@@ -1,9 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import './NavBar.css';
-import logo from '../../../assets/logo.png';
+import logo from '../../../assets/Uni_Nest2.png';
 import { Link } from 'react-router-dom';
-import search_icon from '../../../assets/search_icon.png';
 import { useNavigate } from 'react-router-dom';
 import Cookies from "js-cookie";
 import { jwtDecode } from 'jwt-decode';
@@ -68,8 +67,6 @@ const Navbar = () => {
       </ul>
       
       <div className="navbar-right">
-        <img src={search_icon} alt="search icon" />
-        <button>Sign In</button>
         <button onClick={handleLogout}>Logout</button>
       </div>
     </div>
