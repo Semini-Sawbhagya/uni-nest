@@ -1,4 +1,4 @@
-## Uni-Nest Project
+## Uni-Nest 
 
 Uni-Nest is a full-stack web application designed to connect students seeking boarding accommodations with landlords offering properties. The platform provides secure authentication, property management, request handling, reviews, and payment features. It consists of a Python backend (API, database, security) and a React frontend (student and landlord dashboards, property listings, and more).
 
